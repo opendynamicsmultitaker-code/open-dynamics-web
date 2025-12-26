@@ -9,66 +9,82 @@
 <body>
 
     <div class="container">
+        <!-- HEADER -->
         <header>
-            <div class="logo-text"><a href="index.html">OPEN DYNAMICS™</a></div>
+            <div class="brand-container">
+                <a href="index.html" style="display: flex; align-items: center; gap: 15px;">
+                    <img src="OD_Logo_Transparent.png" alt="Logo" class="header-logo">
+                    <div class="logo-text">OPEN DYNAMICS™</div>
+                </a>
+            </div>
             <button id="theme-toggle" class="theme-toggle">Dark Mode</button>
         </header>
 
         <main>
             <a href="index.html" class="back-link">< Back to Main</a>
 
-            <section class="glass-panel" style="text-align: center;">
-                <h1 style="font-size: 3rem; margin-bottom: 10px;">MULTI-TAKER™</h1>
-                <p style="font-size: 1.2rem; opacity: 0.8;">The professional deconstruction and atmosphere engine.</p>
-            </section>
-
-            <!-- VIDEO SECTION -->
-            <section class="glass-panel">
-                <h2 style="margin-bottom: 20px;">DEMONSTRATION</h2>
-                <div class="video-placeholder">
-                    <p>Promotional Video Coming Soon</p>
-                </div>
-                <p style="text-align: center; max-width: 800px; margin: 0 auto; line-height: 1.6;">
-                    Multi-Taker is a standalone audio processing environment designed for creating ethereal atmospheres, 
-                    loop imperfections, and time-based deconstruction. It operates entirely in RAM for zero-latency 
-                    playback manipulation and features a modular rack of high-fidelity effects.
+            <!-- PRODUCT HERO -->
+            <section class="glass-panel hero">
+                <!-- LOGO DEL PRODUCTO OPACO -->
+                <img src="MultiTaker_Logo_Opaque.png" alt="Multi-Taker Logo" class="main-logo-hero">
+                <h1>MULTI-TAKER™</h1>
+                <p class="slogan" style="font-size: 1.5rem; font-weight: bold; margin-top: 10px;">
+                    The number one tool for creating The Caretaker style music.
+                </p>
+                <p style="opacity: 0.8; max-width: 600px;">
+                    A standalone audio environment designed for memory degradation, loop imperfections, and temporal deconstruction. Everything happens in <strong>REAL TIME</strong>.
                 </p>
             </section>
 
-            <!-- FEATURES LIST -->
+            <!-- VIDEO / DEMO -->
+            <section class="glass-panel">
+                <h2 style="margin-bottom: 20px;">IN ACTION</h2>
+                <div class="video-placeholder">
+                    <p style="font-weight: bold; font-size: 1.2rem;">Promotional Video Coming Soon</p>
+                </div>
+            </section>
+
+            <!-- CORE FEATURES (MARKETING CORRECTED) -->
             <section class="glass-panel">
                 <h2 style="margin-bottom: 20px;">CORE FEATURES</h2>
                 <div class="feature-list">
+                    
+                    <div class="feature-item">
+                        <h3>One-Click Sample Guide (REAL-TIME)</h3>
+                        <p>The world's first Sample Guide that organizes your audio visually in <strong>Real-Time</strong> using our "Flight Lanes" algorithm. No more guessing. See your sound, avoid collisions, and mix visually.</p>
+                    </div>
+
+                    <div class="feature-item">
+                        <h3>Post-Awareness Scrambling</h3>
+                        <p>An advanced stochastic sequencer. Create complex time-traveling structures, micro-loops, and pitch variations that degrade over time. Not just a glitch effect, but a memory loss simulator.</p>
+                    </div>
+
+                    <div class="feature-item">
+                        <h3>Slightly Scrambled</h3>
+                        <p>For subtle degradation. A dedicated buffer engine that introduces minor temporal inconsistencies and jitters, perfect for that "barely holding together" tape feeling.</p>
+                    </div>
+
+                    <div class="feature-item">
+                        <h3>Layer Mixer System</h3>
+                        <p>Combine multiple .taker projects into a massive .tlayer soundscape. Automate fade-ins, fade-outs, and create evolving albums with a single tool.</p>
+                    </div>
+
                     <div class="feature-item">
                         <h3>RAM-First Architecture</h3>
-                        <p>Audio is loaded fully into memory for instant Reverse, Varispeed, and Granular Tone shifting without disk latency.</p>
+                        <p>Audio is loaded fully into memory allowing for instant Varispeed, Reverse, and Granular Tone shifting with zero disk latency.</p>
                     </div>
+
                     <div class="feature-item">
-                        <h3>Modular Effect Rack</h3>
-                        <p>Chain effects dynamically. Includes Modulated FDN Reverb, Offset Delay, TPT EQ, and more.</p>
+                        <h3>"The Bounce" Recording</h3>
+                        <p>Capture your performance live. Every knob movement, every scramble, and every imperfection is recorded to WAV or OGG as you hear it.</p>
                     </div>
-                    <div class="feature-item">
-                        <h3>Real-Time Recording</h3>
-                        <p>"The Bounce" engine captures your performance and knob movements live to WAV or OGG.</p>
-                    </div>
-                    <div class="feature-item">
-                        <h3>Sample-Accurate Loops</h3>
-                        <p>Custom looping engine with millisecond-precision Crossfade (X-Fade) to eliminate clicks.</p>
-                    </div>
-                    <div class="feature-item">
-                        <h3>Glassmorphism UI</h3>
-                        <p>A modern, fluid interface designed for focus and aesthetic pleasure.</p>
-                    </div>
-                    <div class="feature-item">
-                        <h3>Spectral Drone</h3>
-                        <p>FFT-based accumulator that freezes audio into infinite harmonic pads (Studio/Pro only).</p>
-                    </div>
+
                 </div>
             </section>
 
             <!-- PRICING -->
             <section>
-                <h2 style="text-align: center; margin-bottom: 20px; color: var(--text-color);">EDITIONS</h2>
+                <h2 style="text-align: center; margin-bottom: 20px;">EDITIONS</h2>
                 <div class="pricing-container">
                     
                     <!-- FREE -->
@@ -76,13 +92,14 @@
                         <h3>FREE</h3>
                         <div class="price">$0</div>
                         <ul class="features-ul">
-                            <li>All Core Effects (Reverb, Delay, EQ)</li>
+                            <li>All Basic Effects (Reverb, Delay, EQ, Vibrato)</li>
                             <li>Unlimited Tracks</li>
-                            <li>WAV/OGG Export</li>
-                            <li>Glassmorphism UI</li>
-                            <li class="disabled">PitchMap Quantization</li>
-                            <li class="disabled">Drone Atmosphere</li>
-                            <li class="disabled">PA-Scrambling</li>
+                            <li>Real-Time Recording (WAV/OGG)</li>
+                            <li class="warning-text">Project Saving: DISABLED</li>
+                            <li class="warning-text">No Sample Guide</li>
+                            <li class="disabled">Post-Awareness Scrambling</li>
+                            <li class="disabled">Slightly Scrambled</li>
+                            <li class="disabled">PitchMap</li>
                             <li class="disabled">Layer Mixer</li>
                         </ul>
                         <button class="buy-btn">DOWNLOAD</button>
@@ -94,10 +111,11 @@
                         <div class="price">$49.99</div>
                         <ul class="features-ul">
                             <li>Everything in Free</li>
-                            <li><strong>PitchMap</strong> (Spectral Quantizer)</li>
-                            <li><strong>PA-Scrambling</strong> (Time Sequencer)</li>
-                            <li>Slightly Scrambled Effect</li>
-                            <li>Save/Load Projects (.taker)</li>
+                            <li><strong>Save & Load Projects (.taker)</strong></li>
+                            <li><strong>Post-Awareness Scrambling</strong></li>
+                            <li><strong>Slightly Scrambled</strong></li>
+                            <li>PitchMap (Spectral Quantizer)</li>
+                            <li>Sample Guide (Basic Mode)</li>
                             <li class="disabled">Drone Atmosphere</li>
                             <li class="disabled">Layer Mixer</li>
                         </ul>
@@ -110,11 +128,11 @@
                         <div class="price">$69.99</div>
                         <ul class="features-ul">
                             <li>Everything in Pro</li>
+                            <li><strong>Real-Time Sample Guide (Full)</strong></li>
+                            <li><strong>Layer Mixer (.tlayer)</strong></li>
                             <li><strong>Drone</strong> (Spectral Accumulator)</li>
-                            <li><strong>Layer Mixer</strong> (.tlayer system)</li>
-                            <li>Sample Guiding (Visual Lanes)</li>
                             <li>Advanced Automation</li>
-                            <li>Full Commercial License</li>
+                            <li>Commercial License</li>
                         </ul>
                         <button class="buy-btn">BUY STUDIO</button>
                     </div>
