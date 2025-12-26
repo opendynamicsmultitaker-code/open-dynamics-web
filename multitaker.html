@@ -204,7 +204,7 @@
                             <li class="disabled">Drone</li>
                             <li class="disabled">Layer Mixer</li>
                         </ul>
-                        <!-- DIRECT DOWNLOAD BUTTON (Trigger function) -->
+                        <!-- DIRECT DOWNLOAD BUTTON -->
                         <button class="buy-btn" onclick="downloadFree()">DOWNLOAD</button>
                     </div>
 
@@ -251,7 +251,7 @@
         </footer>
     </div>
 
-    <!-- EMAIL CAPTURE MODAL (HTML) -->
+    <!-- EMAIL CAPTURE MODAL -->
     <div id="emailModalOverlay" class="modal-overlay">
         <div class="modal-content">
             <span class="modal-close" onclick="closeModal()">&times;</span>
@@ -270,21 +270,25 @@
     <script>
         // GLOBAL VARIABLES
         let currentStripeLink = "";
+        
+        // --- !!! TOKEN DE FORMSUBMIT (REEMPLAZA EL CORREO DIRECTO) !!! ---
+        const FORM_ENDPOINT = "https://formsubmit.co/ajax/fa56ded478e0354bed1a4b9bb120b4ae";
 
         // --- 1. FREE DOWNLOAD LOGIC ---
         function downloadFree() {
-            // 1. Abrir la descarga inmediatamente para el usuario
+            // 1. Abrir la descarga inmediatamente
             window.open('https://drive.google.com/file/d/145V3IW2AkO25dQHicwWkh9ffPjomh13E', '_blank');
 
-            // 2. Mandar notificación silenciosa
-            fetch("https://formsubmit.co/ajax/opendynamicsmultitaker@gmail.com", {
+            // 2. Mandar notificación silenciosa usando el TOKEN
+            fetch(FORM_ENDPOINT, {
                 method: "POST",
                 headers: { 
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
                 },
                 body: JSON.stringify({
-                    email: "anonymous@download.com", // Dummy mail
+                    email: "anonymous@download.com", // Dummy mail to satisfy FormSubmit
+                    _subject: "New Free Download",
                     message: "A user just downloaded the FREE version."
                 })
             })
@@ -323,7 +327,8 @@
             btn.style.opacity = "0.7";
             btn.disabled = true;
 
-            fetch("https://formsubmit.co/ajax/opendynamicsmultitaker@gmail.com", {
+            // Enviar usando el TOKEN
+            fetch(FORM_ENDPOINT, {
                 method: "POST",
                 headers: { 
                     'Content-Type': 'application/json',
@@ -331,14 +336,16 @@
                 },
                 body: JSON.stringify({
                     email: email,
-                    message: "NEW BUYER INTENT: " + email + " for " + version
+                    _subject: "New Intent to Buy: " + version,
+                    message: "Customer " + email + " clicked to buy " + version
                 })
             })
             .then(response => {
-                window.location.href = currentStripeLink; 
+                window.location.href = currentStripeLink; // Redirect to Stripe
             })
             .catch(error => {
-                window.location.href = currentStripeLink; 
+                console.error("Email API failed, redirecting anyway.");
+                window.location.href = currentStripeLink; // Fallback redirect
             });
         }
 
