@@ -175,7 +175,9 @@
             <p style="opacity: 0.8; margin-bottom: 20px;">Please enter your email to proceed to checkout.</p>
             
             <form id="purchaseForm" onsubmit="submitPurchaseForm(event)">
+                <!-- FormSubmit Settings -->
                 <input type="hidden" name="_captcha" value="false">
+                <input type="hidden" name="_template" value="table">
                 <input type="hidden" id="productInput" name="product_version" value="">
                 
                 <input type="email" id="emailInput" name="email" class="modal-input" placeholder="your@email.com" required>
