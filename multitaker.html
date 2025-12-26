@@ -121,8 +121,7 @@
                             <li class="disabled">Drone</li>
                             <li class="disabled">Layer Mixer</li>
                         </ul>
-                        <!-- JS Trigger for Free Download -->
-                        <button class="buy-btn" onclick="initiateCheckout('free')">DOWNLOAD</button>
+                        <button class="buy-btn">DOWNLOAD</button>
                     </div>
 
                     <!-- PRO -->
@@ -131,16 +130,15 @@
                         <div class="price">$49.99</div>
                         <ul class="features-ul">
                             <li>Everything in Free</li>
-                            <li>Save & Load Projects (.taker)</li>
-                            <li>All Scrambling Effects</li>
+                            <li><strong>Save & Load Projects (.taker)</strong></li>
                             <li><strong>Post-Awareness Scrambling</strong></li>
-                            <li><strong>PitchMap</strong> (Spectral Quantizer)</li>
+                            <li><strong>Slightly Scrambled</strong></li>
+                            <li>PitchMap (Spectral Quantizer)</li>
                             <li class="disabled">Sample Guide</li>
                             <li class="disabled">Drone Effect</li>
                             <li class="disabled">Layer Mixer</li>
                         </ul>
-                        <!-- JS Trigger for Pro Modal -->
-                        <button class="buy-btn" onclick="initiateCheckout('pro')">BUY PRO</button>
+                        <button class="buy-btn">BUY PRO</button>
                     </div>
 
                     <!-- STUDIO -->
@@ -149,13 +147,12 @@
                         <div class="price">$69.99</div>
                         <ul class="features-ul">
                             <li>Everything in Pro</li>
-                            <li><strong>Sample Guide</strong> (Real-Time)</li>
+                            <li><strong>Sample Guide (Real-Time)</strong></li>
                             <li><strong>Drone Effect</strong></li>
-                            <li><strong>Layer Mixer</strong> (.tlayer)</li>
+                            <li><strong>Layer Mixer (.tlayer)</strong></li>
                             <li>Everything Unlocked</li>
                         </ul>
-                        <!-- JS Trigger for Studio Modal -->
-                        <button class="buy-btn" onclick="initiateCheckout('studio')">BUY STUDIO</button>
+                        <button class="buy-btn">BUY STUDIO</button>
                     </div>
 
                 </div>
@@ -166,20 +163,6 @@
         <footer>
             <p>&copy; 2025 Open Dynamics™. All rights reserved.</p>
         </footer>
-    </div>
-
-    <!-- CHECKOUT MODAL -->
-    <div id="checkout-modal" class="modal-overlay">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeCheckout()">&times;</span>
-            <h2 style="margin-bottom: 10px;">Final Step</h2>
-            <p style="opacity: 0.8; margin-bottom: 20px;">Please enter your email address. This is required to send you your License Key immediately after payment.</p>
-            
-            <input type="email" id="user-email" class="email-input" placeholder="your@email.com" required>
-            
-            <button class="modal-btn" onclick="proceedToPayment()">Continue to Payment >></button>
-            <p style="font-size: 0.8rem; margin-top: 15px; opacity: 0.6;">Secure payment via Stripe</p>
-        </div>
     </div>
 
     <script src="script.js"></script>
