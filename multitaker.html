@@ -4,7 +4,107 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Multi-Taker™ | Open Dynamics</title>
+    <!-- Vinculamos el estilo general para la estética -->
     <link rel="stylesheet" href="style.css">
+    
+    <!-- ESTILOS ESPECÍFICOS DEL MODAL (Integrados para asegurar que carguen) -->
+    <style>
+        /* MODAL STYLES - FORCED */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: none; /* Oculto por defecto */
+            justify-content: center;
+            align-items: center;
+            z-index: 99999 !important; /* Siempre encima de todo */
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: rgba(20, 20, 25, 0.95); /* Fondo oscuro solido con leve transparencia */
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-content h2 {
+            color: white;
+            margin-bottom: 10px;
+            font-family: 'Futura', sans-serif;
+        }
+
+        .modal-content p {
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 15px;
+            margin: 15px 0 25px 0;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .modal-input:focus {
+            border-color: #a1c4fd;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2rem;
+            cursor: pointer;
+            color: white;
+            opacity: 0.7;
+        }
+
+        .modal-close:hover { opacity: 1; }
+
+        .modal-btn {
+            background: linear-gradient(135deg, #3d55ae, #75359d);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1rem;
+            transition: transform 0.1s;
+        }
+        
+        .modal-btn:hover { transform: scale(1.02); }
+    </style>
 </head>
 <body>
 
@@ -35,49 +135,34 @@
                 </p>
             </section>
 
-            <!-- VIDEO / DEMO -->
-            <section class="glass-panel">
-                <h2 style="margin-bottom: 20px;">IN ACTION</h2>
-                <div class="video-placeholder">
-                    <p style="font-weight: bold; font-size: 1.2rem;">Promotional Video Coming Soon</p>
-                </div>
-            </section>
-
-            <!-- CORE FEATURES -->
+            <!-- FEATURES LIST -->
             <section class="glass-panel">
                 <h2 style="margin-bottom: 20px;">CORE FEATURES</h2>
                 <div class="feature-list">
-                    
                     <div class="feature-item">
                         <h3>One-Click Sample Guide (REAL-TIME)</h3>
                         <p>The world's first Sample Guide that organizes your audio visually in <strong>Real-Time</strong> using our "Flight Lanes" algorithm. No more guessing. See your sound, avoid collisions, and mix visually.</p>
                     </div>
-
                     <div class="feature-item">
                         <h3>Post-Awareness Scrambling</h3>
-                        <p>An advanced stochastic sequencer. Create complex time-traveling structures, micro-loops, and pitch variations that degrade over time. Not just a glitch effect, but a memory loss simulator.</p>
+                        <p>An advanced stochastic sequencer. Create complex time-traveling structures, micro-loops, and pitch variations that degrade over time.</p>
                     </div>
-
                     <div class="feature-item">
                         <h3>Slightly Scrambled</h3>
-                        <p>For subtle degradation. A dedicated buffer engine that introduces minor temporal inconsistencies and jitters, perfect for that "barely holding together" tape feeling.</p>
+                        <p>For subtle degradation. A dedicated buffer engine that introduces minor temporal inconsistencies and jitters.</p>
                     </div>
-
                     <div class="feature-item">
                         <h3>Layer Mixer System</h3>
                         <p>Combine multiple .taker projects into a massive .tlayer soundscape. Automate fade-ins, fade-outs, and create evolving albums with a single tool.</p>
                     </div>
-
                     <div class="feature-item">
                         <h3>RAM-First Architecture</h3>
                         <p>Audio is loaded fully into memory allowing for instant Varispeed, Reverse, and Granular Tone shifting with zero disk latency.</p>
                     </div>
-
                     <div class="feature-item">
                         <h3>"The Bounce" Recording</h3>
                         <p>Capture your performance live. Every knob movement, every scramble, and every imperfection is recorded to WAV or OGG as you hear it.</p>
                     </div>
-
                 </div>
             </section>
 
@@ -139,7 +224,7 @@
                             <li class="disabled">Layer Mixer</li>
                         </ul>
                         <!-- TRIGGER MODAL FOR PRO -->
-                        <button class="buy-btn" onclick="openPurchaseModal('PRO', 'https://buy.stripe.com/aFadRb83Fgrq16l7t56EU01')">BUY PRO</button>
+                        <button class="buy-btn" onclick="openModal('PRO', 'https://buy.stripe.com/aFadRb83Fgrq16l7t56EU01')">BUY PRO</button>
                     </div>
 
                     <!-- STUDIO -->
@@ -154,7 +239,7 @@
                             <li>Everything Unlocked</li>
                         </ul>
                         <!-- TRIGGER MODAL FOR STUDIO -->
-                        <button class="buy-btn" onclick="openPurchaseModal('STUDIO', 'https://buy.stripe.com/3cIbJ3cjV5MMdT76p16EU00')">BUY STUDIO</button>
+                        <button class="buy-btn" onclick="openModal('STUDIO', 'https://buy.stripe.com/3cIbJ3cjV5MMdT76p16EU00')">BUY STUDIO</button>
                     </div>
 
                 </div>
@@ -167,26 +252,128 @@
         </footer>
     </div>
 
-    <!-- EMAIL CAPTURE MODAL -->
-    <div id="emailModal" class="modal-overlay">
+    <!-- EMAIL CAPTURE MODAL (HTML) -->
+    <div id="emailModalOverlay" class="modal-overlay">
         <div class="modal-content">
-            <span class="modal-close" onclick="closePurchaseModal()">&times;</span>
-            <h2 style="margin-bottom: 10px;">Almost There</h2>
-            <p style="opacity: 0.8; margin-bottom: 20px;">Please enter your email to proceed to checkout.</p>
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <h2>Almost There</h2>
+            <p>Please enter your email to proceed to checkout.</p>
             
-            <form id="purchaseForm" onsubmit="submitPurchaseForm(event)">
-                <!-- FormSubmit Settings -->
-                <input type="hidden" name="_captcha" value="false">
-                <input type="hidden" name="_template" value="table">
-                <input type="hidden" id="productInput" name="product_version" value="">
+            <form id="purchaseForm" onsubmit="handleFormSubmit(event)">
+                <input type="hidden" id="productVersion" name="version">
                 
-                <input type="email" id="emailInput" name="email" class="modal-input" placeholder="your@email.com" required>
+                <input type="email" id="customerEmail" class="modal-input" placeholder="your@email.com" required>
                 
-                <button type="submit" class="buy-btn" style="background: var(--accent-color); color: white;">PROCEED TO PAYMENT</button>
+                <button type="submit" class="modal-btn">PROCEED TO PAYMENT</button>
             </form>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <!-- JAVASCRIPT INTEGRADO (Para asegurar funcionamiento) -->
+    <script>
+        // GLOBAL VARIABLES
+        let currentStripeLink = "";
+
+        // --- 1. MODAL FUNCTIONS ---
+        function openModal(version, stripeLink) {
+            console.log("Opening modal for: " + version);
+            currentStripeLink = stripeLink;
+            
+            // Set hidden value
+            document.getElementById('productVersion').value = version;
+            
+            // Force display via CSS class
+            const modal = document.getElementById('emailModalOverlay');
+            if(modal) {
+                modal.classList.add('active');
+            } else {
+                alert("Error: Modal not found. Redirecting to Stripe...");
+                window.location.href = stripeLink;
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('emailModalOverlay');
+            if(modal) modal.classList.remove('active');
+        }
+
+        // Close on outside click
+        window.onclick = function(event) {
+            const modal = document.getElementById('emailModalOverlay');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        // --- 2. FORM HANDLING (THE EMAIL BOT) ---
+        function handleFormSubmit(e) {
+            e.preventDefault(); // Stop reload
+            
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+            const email = document.getElementById('customerEmail').value;
+            const version = document.getElementById('productVersion').value;
+
+            // Visual Feedback
+            btn.innerText = "Processing...";
+            btn.style.opacity = "0.7";
+            btn.disabled = true;
+
+            // Send to FormSubmit
+            fetch("https://formsubmit.co/ajax/opendynamicsmultitaker@gmail.com", {
+                method: "POST",
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: email,
+                    message: "NEW BUYER INTENT: " + email + " for " + version
+                })
+            })
+            .then(response => {
+                console.log("Email sent.");
+                window.location.href = currentStripeLink; // Go to Stripe
+            })
+            .catch(error => {
+                console.error("Email failed, redirecting anyway.");
+                window.location.href = currentStripeLink; // Go to Stripe anyway
+            });
+        }
+
+        // --- 3. DARK MODE LOGIC ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggleButton = document.getElementById('theme-toggle');
+            const body = document.body;
+            
+            // Check storage
+            const currentTheme = localStorage.getItem('theme');
+            if (currentTheme === 'dark') {
+                body.setAttribute('data-theme', 'dark');
+                toggleButton.textContent = 'Light Mode';
+            } else if (currentTheme === 'light') {
+                body.setAttribute('data-theme', 'light');
+                toggleButton.textContent = 'Dark Mode';
+            } else {
+                // Default System
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    body.setAttribute('data-theme', 'dark');
+                    toggleButton.textContent = 'Light Mode';
+                }
+            }
+
+            toggleButton.addEventListener('click', () => {
+                if (body.getAttribute('data-theme') === 'dark') {
+                    body.setAttribute('data-theme', 'light');
+                    toggleButton.textContent = 'Dark Mode';
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    body.setAttribute('data-theme', 'dark');
+                    toggleButton.textContent = 'Light Mode';
+                    localStorage.setItem('theme', 'dark');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
