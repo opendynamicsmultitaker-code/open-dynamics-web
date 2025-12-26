@@ -1,11 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- THEME LOGIC ---
+    // --- THEME TOGGLE LOGIC ---
     const toggleButton = document.getElementById('theme-toggle');
     const body = document.body;
+    
     const currentTheme = localStorage.getItem('theme');
-    if (currentTheme === 'dark') {
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    if (currentTheme === 'dark' || (!currentTheme && systemPrefersDark)) {
         body.setAttribute('data-theme', 'dark');
         toggleButton.textContent = 'Light Mode';
+    } else {
+        body.setAttribute('data-theme', 'light');
+        toggleButton.textContent = 'Dark Mode';
     }
 
     toggleButton.addEventListener('click', () => {
@@ -19,59 +25,64 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('theme', 'dark');
         }
     });
-
-    // --- PURCHASE LOGIC ---
-    const modal = document.getElementById('purchase-modal');
-    const emailInput = document.getElementById('customer-email');
-    const proceedBtn = document.getElementById('proceed-btn');
-    const modalTitle = document.getElementById('modal-product-title');
-    
-    let currentProduct = "";
-    let stripeUrl = "";
-
-    window.openPurchase = (product, url) => {
-        if (product === 'FREE') {
-            window.open(url, '_blank');
-            return;
-        }
-        currentProduct = product;
-        stripeUrl = url;
-        modalTitle.textContent = "Get Multi-Taker " + product;
-        modal.style.display = 'flex';
-    };
-
-    window.closeModal = () => {
-        modal.style.display = 'none';
-        emailInput.value = "";
-    };
-
-    proceedBtn.addEventListener('click', async () => {
-        const email = emailInput.value.trim();
-        if (!email || !email.includes('@')) {
-            alert("Please enter a valid email address.");
-            return;
-        }
-
-        proceedBtn.textContent = "Processing...";
-        proceedBtn.disabled = true;
-
-        // NOTIFY DEVELOPER via Formspree (Replace 'YOUR_FORM_ID' with your actual ID)
-        // To get a Form ID, sign up at formspree.io (it's free)
-        try {
-            await fetch('https://formspree.io/f/xvgzrrar', { // He puesto opendynamicsmultitaker@gmail.com como destino si usas mi link de test pero crea el tuyo
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    email: email,
-                    product: currentProduct,
-                    message: `New potential buyer for Multi-Taker ${currentProduct}`
-                })
-            });
-        } catch (e) {
-            console.log("Notification failed, but proceeding to stripe.");
-        }
-
-        // REDIRECT TO STRIPE
-        window.location.href = stripeUrl;
-    });
 });
+
+// --- PAYMENT & DOWNLOAD LOGIC ---
+
+// Configuration
+const LINKS = {
+    free: "https://drive.google.com/file/d/145V3IW2AkO25dQHicwWkh9ffPjomh13E",
+    pro: "https://buy.stripe.com/aFadRb83Fgrq16l7t56EU01",
+    studio: "https://buy.stripe.com/3cIbJ3cjV5MMdT76p16EU00"
+};
+
+let selectedProduct = null;
+
+function initiateCheckout(product) {
+    // FREE VERSION: Direct Download
+    if (product === 'free') {
+        window.open(LINKS.free, '_blank');
+        return;
+    }
+
+    // PRO & STUDIO: Open Email Modal
+    selectedProduct = product;
+    document.getElementById('checkout-modal').style.display = 'flex';
+    document.getElementById('user-email').focus();
+}
+
+function closeCheckout() {
+    document.getElementById('checkout-modal').style.display = 'none';
+    selectedProduct = null;
+}
+
+function proceedToPayment() {
+    const emailInput = document.getElementById('user-email');
+    const email = emailInput.value.trim();
+
+    // Basic Validation
+    if (!email || !email.includes('@') || !email.includes('.')) {
+        alert("Please enter a valid email address to receive your license key.");
+        return;
+    }
+
+    // Determine Stripe Link
+    let stripeUrl = "";
+    if (selectedProduct === 'pro') stripeUrl = LINKS.pro;
+    else if (selectedProduct === 'studio') stripeUrl = LINKS.studio;
+
+    // Append Email for Stripe Pre-filling
+    // Stripe uses 'prefilled_email' parameter to capture this
+    const finalUrl = `${stripeUrl}?prefilled_email=${encodeURIComponent(email)}`;
+
+    // Redirect
+    window.location.href = finalUrl;
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('checkout-modal');
+    if (event.target == modal) {
+        closeCheckout();
+    }
+}
