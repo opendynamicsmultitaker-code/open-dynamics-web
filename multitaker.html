@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Multi-Taker™ | Open Dynamics</title>
     <link rel="stylesheet" href="style.css">
+    
+    <!-- EMAILJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
 <body>
 
@@ -25,7 +28,6 @@
 
             <!-- PRODUCT HERO -->
             <section class="glass-panel hero">
-                <!-- LOGO DEL PRODUCTO OPACO -->
                 <img src="MultiTaker_Logo_Opaque.png" alt="Multi-Taker Logo" class="main-logo-hero">
                 <h1>MULTI-TAKER™</h1>
                 <p class="slogan" style="font-size: 1.5rem; font-weight: bold; margin-top: 10px;">
@@ -121,7 +123,7 @@
                             <li class="disabled">Drone</li>
                             <li class="disabled">Layer Mixer</li>
                         </ul>
-                        <button class="buy-btn">DOWNLOAD</button>
+                        <button class="buy-btn" onclick="openPurchaseModal('FREE')">DOWNLOAD</button>
                     </div>
 
                     <!-- PRO -->
@@ -130,15 +132,15 @@
                         <div class="price">$49.99</div>
                         <ul class="features-ul">
                             <li>Everything in Free</li>
-                            <li><strong>Save & Load Projects (.taker)</strong></li>
-                            <li><strong>Post-Awareness Scrambling</strong></li>
-                            <li><strong>Slightly Scrambled</strong></li>
-                            <li>PitchMap (Spectral Quantizer)</li>
+                            <li>Save & Load Projects</li>
+                            <li>All the scrambling effects</li>
+                            <li>Post-Awareness</li>
+                            <li>PitchMap</li>
                             <li class="disabled">Sample Guide</li>
-                            <li class="disabled">Drone Effect</li>
+                            <li class="disabled">Drone</li>
                             <li class="disabled">Layer Mixer</li>
                         </ul>
-                        <button class="buy-btn">BUY PRO</button>
+                        <button class="buy-btn" onclick="openPurchaseModal('PRO')">BUY PRO</button>
                     </div>
 
                     <!-- STUDIO -->
@@ -147,12 +149,12 @@
                         <div class="price">$69.99</div>
                         <ul class="features-ul">
                             <li>Everything in Pro</li>
-                            <li><strong>Sample Guide (Real-Time)</strong></li>
-                            <li><strong>Drone Effect</strong></li>
-                            <li><strong>Layer Mixer (.tlayer)</strong></li>
-                            <li>Everything Unlocked</li>
+                            <li>Sample Guide</li>
+                            <li>Drone effect</li>
+                            <li>Layer Mixer</li>
+                            <li>Everything unlocked</li>
                         </ul>
-                        <button class="buy-btn">BUY STUDIO</button>
+                        <button class="buy-btn" onclick="openPurchaseModal('STUDIO')">BUY STUDIO</button>
                     </div>
 
                 </div>
@@ -163,6 +165,20 @@
         <footer>
             <p>&copy; 2025 Open Dynamics™. All rights reserved.</p>
         </footer>
+    </div>
+
+    <!-- EMAIL CAPTURE MODAL -->
+    <div id="email-modal" class="modal-overlay">
+        <div class="glass-panel modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="modal-title" class="modal-title">Get Started</h2>
+            <p style="opacity: 0.8; margin-bottom: 20px;">Please enter your email to proceed to secure checkout.</p>
+            
+            <input type="email" id="user-email" class="email-input" placeholder="your@email.com" required>
+            
+            <button id="confirm-purchase" class="buy-btn">PROCEED TO STRIPE</button>
+            <p style="font-size: 0.8rem; margin-top: 15px; opacity: 0.6;">We value your privacy.</p>
+        </div>
     </div>
 
     <script src="script.js"></script>
