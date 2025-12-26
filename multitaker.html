@@ -4,12 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Multi-Taker™ | Open Dynamics</title>
-    <!-- Vinculamos el estilo general para la estética -->
+    <!-- Vinculamos el estilo general -->
     <link rel="stylesheet" href="style.css">
     
-    <!-- ESTILOS ESPECÍFICOS DEL MODAL (Integrados para asegurar que carguen) -->
+    <!-- ESTILOS ESPECÍFICOS DEL MODAL -->
     <style>
-        /* MODAL STYLES - FORCED */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -19,10 +18,10 @@
             background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            display: none; /* Oculto por defecto */
+            display: none;
             justify-content: center;
             align-items: center;
-            z-index: 99999 !important; /* Siempre encima de todo */
+            z-index: 99999 !important;
             opacity: 0;
             transition: opacity 0.3s ease;
         }
@@ -33,7 +32,7 @@
         }
 
         .modal-content {
-            background: rgba(20, 20, 25, 0.95); /* Fondo oscuro solido con leve transparencia */
+            background: rgba(20, 20, 25, 0.95);
             border: 1px solid rgba(255, 255, 255, 0.2);
             padding: 40px;
             border-radius: 20px;
@@ -205,8 +204,8 @@
                             <li class="disabled">Drone</li>
                             <li class="disabled">Layer Mixer</li>
                         </ul>
-                        <!-- DIRECT DOWNLOAD FOR FREE -->
-                        <button class="buy-btn" onclick="window.open('https://drive.google.com/file/d/145V3IW2AkO25dQHicwWkh9ffPjomh13E', '_blank')">DOWNLOAD</button>
+                        <!-- DIRECT DOWNLOAD BUTTON (Trigger function) -->
+                        <button class="buy-btn" onclick="downloadFree()">DOWNLOAD</button>
                     </div>
 
                     <!-- PRO -->
@@ -261,35 +260,46 @@
             
             <form id="purchaseForm" onsubmit="handleFormSubmit(event)">
                 <input type="hidden" id="productVersion" name="version">
-                
                 <input type="email" id="customerEmail" class="modal-input" placeholder="your@email.com" required>
-                
                 <button type="submit" class="modal-btn">PROCEED TO PAYMENT</button>
             </form>
         </div>
     </div>
 
-    <!-- JAVASCRIPT INTEGRADO (Para asegurar funcionamiento) -->
+    <!-- JAVASCRIPT INTEGRADO -->
     <script>
         // GLOBAL VARIABLES
         let currentStripeLink = "";
 
-        // --- 1. MODAL FUNCTIONS ---
+        // --- 1. FREE DOWNLOAD LOGIC ---
+        function downloadFree() {
+            // 1. Abrir la descarga inmediatamente para el usuario
+            window.open('https://drive.google.com/file/d/145V3IW2AkO25dQHicwWkh9ffPjomh13E', '_blank');
+
+            // 2. Mandar notificación silenciosa
+            fetch("https://formsubmit.co/ajax/opendynamicsmultitaker@gmail.com", {
+                method: "POST",
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: "anonymous@download.com", // Dummy mail
+                    message: "A user just downloaded the FREE version."
+                })
+            })
+            .then(response => console.log("Free download logged."))
+            .catch(error => console.error("Log failed, but download should work."));
+        }
+
+        // --- 2. MODAL FUNCTIONS (PAID) ---
         function openModal(version, stripeLink) {
             console.log("Opening modal for: " + version);
             currentStripeLink = stripeLink;
-            
-            // Set hidden value
             document.getElementById('productVersion').value = version;
             
-            // Force display via CSS class
             const modal = document.getElementById('emailModalOverlay');
-            if(modal) {
-                modal.classList.add('active');
-            } else {
-                alert("Error: Modal not found. Redirecting to Stripe...");
-                window.location.href = stripeLink;
-            }
+            if(modal) modal.classList.add('active');
         }
 
         function closeModal() {
@@ -297,29 +307,22 @@
             if(modal) modal.classList.remove('active');
         }
 
-        // Close on outside click
         window.onclick = function(event) {
             const modal = document.getElementById('emailModalOverlay');
-            if (event.target == modal) {
-                closeModal();
-            }
+            if (event.target == modal) closeModal();
         }
 
-        // --- 2. FORM HANDLING (THE EMAIL BOT) ---
+        // --- 3. FORM HANDLING (THE EMAIL BOT) ---
         function handleFormSubmit(e) {
-            e.preventDefault(); // Stop reload
-            
+            e.preventDefault(); 
             const btn = e.target.querySelector('button');
-            const originalText = btn.innerText;
             const email = document.getElementById('customerEmail').value;
             const version = document.getElementById('productVersion').value;
 
-            // Visual Feedback
             btn.innerText = "Processing...";
             btn.style.opacity = "0.7";
             btn.disabled = true;
 
-            // Send to FormSubmit
             fetch("https://formsubmit.co/ajax/opendynamicsmultitaker@gmail.com", {
                 method: "POST",
                 headers: { 
@@ -332,21 +335,18 @@
                 })
             })
             .then(response => {
-                console.log("Email sent.");
-                window.location.href = currentStripeLink; // Go to Stripe
+                window.location.href = currentStripeLink; 
             })
             .catch(error => {
-                console.error("Email failed, redirecting anyway.");
-                window.location.href = currentStripeLink; // Go to Stripe anyway
+                window.location.href = currentStripeLink; 
             });
         }
 
-        // --- 3. DARK MODE LOGIC ---
+        // --- 4. DARK MODE LOGIC ---
         document.addEventListener('DOMContentLoaded', () => {
             const toggleButton = document.getElementById('theme-toggle');
             const body = document.body;
             
-            // Check storage
             const currentTheme = localStorage.getItem('theme');
             if (currentTheme === 'dark') {
                 body.setAttribute('data-theme', 'dark');
@@ -355,7 +355,6 @@
                 body.setAttribute('data-theme', 'light');
                 toggleButton.textContent = 'Dark Mode';
             } else {
-                // Default System
                 if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
                     body.setAttribute('data-theme', 'dark');
                     toggleButton.textContent = 'Light Mode';
