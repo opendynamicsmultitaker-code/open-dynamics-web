@@ -1,27 +1,10 @@
-/* 
-   OPEN DYNAMICS LOGIC ENGINE
-   Handles Theme, Modals, Email, and Payments
-*/
-
-// --- CONFIGURATION (REPLACE THESE WITH YOUR EMAILJS DATA) ---
-const EMAILJS_PUBLIC_KEY = "YOUR_PUBLIC_KEY";  // From Account > API Keys
-const EMAILJS_SERVICE_ID = "YOUR_SERVICE_ID";  // From Email Services
-const EMAILJS_TEMPLATE_ID = "YOUR_TEMPLATE_ID"; // From Email Templates
-
-// --- LINKS ---
-const LINK_FREE = "https://drive.google.com/file/d/145V3IW2AkO25dQHicwWkh9ffPjomh13E/view?usp=sharing";
-const LINK_PRO = "https://buy.stripe.com/aFadRb83Fgrq16l7t56EU01";
-const LINK_STUDIO = "https://buy.stripe.com/3cIbJ3cjV5MMdT76p16EU00";
+// GLOBAL VARIABLES FOR PURCHASE FLOW
+let currentStripeUrl = "";
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Initialize EmailJS
-    if (typeof emailjs !== 'undefined') {
-        emailjs.init(EMAILJS_PUBLIC_KEY);
-    }
-
-    // 2. Theme Toggle Logic
     const toggleButton = document.getElementById('theme-toggle');
     const body = document.body;
+    
     const currentTheme = localStorage.getItem('theme');
     const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
@@ -44,77 +27,66 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('theme', 'dark');
         }
     });
-
-    // 3. Purchase Logic
-    const modal = document.getElementById('email-modal');
-    const modalTitle = document.getElementById('modal-title');
-    const emailInput = document.getElementById('user-email');
-    const confirmBtn = document.getElementById('confirm-purchase');
-    const closeBtn = document.querySelector('.close-modal');
-    
-    let selectedProduct = null;
-
-    // Open Modal Function
-    window.openPurchaseModal = (product) => {
-        if (product === 'FREE') {
-            // Direct download for free
-            window.open(LINK_FREE, '_blank');
-            return;
-        }
-        
-        selectedProduct = product;
-        modalTitle.innerText = `Get ${product} Edition`;
-        modal.classList.add('active');
-    };
-
-    // Close Modal
-    if (closeBtn) {
-        closeBtn.addEventListener('click', () => {
-            modal.classList.remove('active');
-        });
-    }
-
-    // Confirm Purchase & Send Email
-    if (confirmBtn) {
-        confirmBtn.addEventListener('click', () => {
-            const email = emailInput.value.trim();
-            
-            if (!validateEmail(email)) {
-                alert("Please enter a valid email address.");
-                return;
-            }
-
-            confirmBtn.innerText = "Processing...";
-            confirmBtn.disabled = true;
-
-            // Send Email to YOU (Bot)
-            const templateParams = {
-                product_name: selectedProduct,
-                user_email: email
-            };
-
-            emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
-                .then(() => {
-                    // Success - Redirect to Stripe
-                    redirectToStripe(selectedProduct, email);
-                }, (error) => {
-                    console.error('EmailJS Error:', error);
-                    // Even if email fails, let them buy (don't lose the sale)
-                    redirectToStripe(selectedProduct, email);
-                });
-        });
-    }
-
-    function redirectToStripe(product, email) {
-        let baseUrl = (product === 'PRO') ? LINK_PRO : LINK_STUDIO;
-        
-        // Append email to Stripe URL for pre-filling
-        const finalUrl = `${baseUrl}?prefilled_email=${encodeURIComponent(email)}`;
-        
-        window.location.href = finalUrl;
-    }
-
-    function validateEmail(email) {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    }
 });
+
+// --- PURCHASE MODAL LOGIC ---
+
+function openPurchaseModal(version, stripeUrl) {
+    currentStripeUrl = stripeUrl;
+    
+    // Set hidden input value for the email bot
+    document.getElementById('productInput').value = "INTENT TO BUY: " + version;
+    
+    // Show Modal
+    const modal = document.getElementById('emailModal');
+    modal.classList.add('active');
+}
+
+function closePurchaseModal() {
+    const modal = document.getElementById('emailModal');
+    modal.classList.remove('active');
+}
+
+function submitPurchaseForm(event) {
+    event.preventDefault(); // Stop default form reload
+    
+    const email = document.getElementById('emailInput').value;
+    const product = document.getElementById('productInput').value;
+    const btn = event.target.querySelector('button');
+    
+    // Visual feedback
+    const originalText = btn.textContent;
+    btn.textContent = "Redirecting...";
+    btn.disabled = true;
+
+    // Send data to FormSubmit (The Bot)
+    fetch("https://formsubmit.co/ajax/opendynamicsmultitaker@gmail.com", {
+        method: "POST",
+        headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+            email: email,
+            message: "User " + email + " is proceeding to buy " + product
+        })
+    })
+    .then(response => {
+        // Whether email succeeds or fails, we redirect the customer to pay
+        // so we don't lose the sale.
+        window.location.href = currentStripeUrl;
+    })
+    .catch(error => {
+        console.error('Error sending email notification:', error);
+        // Fallback: Redirect anyway
+        window.location.href = currentStripeUrl;
+    });
+}
+
+// Close modal if clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('emailModal');
+    if (event.target == modal) {
+        closePurchaseModal();
+    }
+}
