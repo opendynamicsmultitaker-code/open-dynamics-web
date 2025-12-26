@@ -1,6 +1,7 @@
-// GLOBAL VARIABLES FOR PURCHASE FLOW
+// --- GLOBAL VARIABLES ---
 let currentStripeUrl = "";
 
+// --- THEME LOGIC ---
 document.addEventListener('DOMContentLoaded', () => {
     const toggleButton = document.getElementById('theme-toggle');
     const body = document.body;
@@ -29,37 +30,52 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// --- PURCHASE MODAL LOGIC ---
+// --- PURCHASE MODAL LOGIC (GLOBAL SCOPE) ---
 
 function openPurchaseModal(version, stripeUrl) {
+    console.log("Opening modal for:", version); // Debug check
     currentStripeUrl = stripeUrl;
     
     // Set hidden input value for the email bot
-    document.getElementById('productInput').value = "INTENT TO BUY: " + version;
+    const productInput = document.getElementById('productInput');
+    if (productInput) {
+        productInput.value = "INTENT TO BUY: " + version;
+    }
     
-    // Show Modal
+    // Show Modal by adding 'active' class
     const modal = document.getElementById('emailModal');
-    modal.classList.add('active');
+    if (modal) {
+        modal.classList.add('active');
+    } else {
+        console.error("Modal element not found!");
+    }
 }
 
 function closePurchaseModal() {
     const modal = document.getElementById('emailModal');
-    modal.classList.remove('active');
+    if (modal) modal.classList.remove('active');
 }
 
 function submitPurchaseForm(event) {
     event.preventDefault(); // Stop default form reload
     
-    const email = document.getElementById('emailInput').value;
-    const product = document.getElementById('productInput').value;
+    const emailField = document.getElementById('emailInput');
+    const productField = document.getElementById('productInput');
     const btn = event.target.querySelector('button');
     
+    if (!emailField || !productField) return;
+
     // Visual feedback
-    const originalText = btn.textContent;
     btn.textContent = "Redirecting...";
     btn.disabled = true;
+    btn.style.opacity = "0.7";
+
+    const email = emailField.value;
+    const product = productField.value;
 
     // Send data to FormSubmit (The Bot)
+    // NOTE: Check your email (opendynamicsmultitaker@gmail.com) the first time you test this!
+    // FormSubmit will ask you to confirm the activation.
     fetch("https://formsubmit.co/ajax/opendynamicsmultitaker@gmail.com", {
         method: "POST",
         headers: { 
@@ -68,17 +84,17 @@ function submitPurchaseForm(event) {
         },
         body: JSON.stringify({
             email: email,
-            message: "User " + email + " is proceeding to buy " + product
+            message: "NEW CUSTOMER: " + email + " wants to buy " + product
         })
     })
     .then(response => {
-        // Whether email succeeds or fails, we redirect the customer to pay
-        // so we don't lose the sale.
+        console.log("Email sent successfully.");
+        // Redirect to Stripe regardless of email success
         window.location.href = currentStripeUrl;
     })
     .catch(error => {
         console.error('Error sending email notification:', error);
-        // Fallback: Redirect anyway
+        // Fallback: Redirect anyway so we don't lose the sale
         window.location.href = currentStripeUrl;
     });
 }
