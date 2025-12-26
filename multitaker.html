@@ -1,4 +1,104 @@
-<!-- Reemplaza la sección de PRICING y añade el MODAL al final del body -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Taker™ | Open Dynamics</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <!-- HEADER -->
+        <header>
+            <div class="brand-container">
+                <a href="index.html" style="display: flex; align-items: center; gap: 15px;">
+                    <img src="OD_Logo_Transparent.png" alt="Logo" class="header-logo">
+                    <div class="logo-text">OPEN DYNAMICS™</div>
+                </a>
+            </div>
+            <button id="theme-toggle" class="theme-toggle">Dark Mode</button>
+        </header>
+
+        <main>
+            <a href="index.html" class="back-link">< Back to Main</a>
+
+            <!-- PRODUCT HERO -->
+            <section class="glass-panel hero">
+                <!-- LOGO DEL PRODUCTO OPACO -->
+                <img src="MultiTaker_Logo_Opaque.png" alt="Multi-Taker Logo" class="main-logo-hero">
+                <h1>MULTI-TAKER™</h1>
+                <p class="slogan" style="font-size: 1.5rem; font-weight: bold; margin-top: 10px;">
+                    The number one tool for creating The Caretaker style music.
+                </p>
+                <p style="opacity: 0.8; max-width: 600px;">
+                    A standalone audio environment designed for memory degradation, loop imperfections, and temporal deconstruction. Everything happens in <strong>REAL TIME</strong>.
+                </p>
+            </section>
+
+            <!-- VIDEO / DEMO -->
+            <section class="glass-panel">
+                <h2 style="margin-bottom: 20px;">IN ACTION</h2>
+                <div class="video-placeholder">
+                    <p style="font-weight: bold; font-size: 1.2rem;">Promotional Video Coming Soon</p>
+                </div>
+            </section>
+
+            <!-- CORE FEATURES -->
+            <section class="glass-panel">
+                <h2 style="margin-bottom: 20px;">CORE FEATURES</h2>
+                <div class="feature-list">
+                    
+                    <div class="feature-item">
+                        <h3>One-Click Sample Guide (REAL-TIME)</h3>
+                        <p>The world's first Sample Guide that organizes your audio visually in <strong>Real-Time</strong> using our "Flight Lanes" algorithm. No more guessing. See your sound, avoid collisions, and mix visually.</p>
+                    </div>
+
+                    <div class="feature-item">
+                        <h3>Post-Awareness Scrambling</h3>
+                        <p>An advanced stochastic sequencer. Create complex time-traveling structures, micro-loops, and pitch variations that degrade over time. Not just a glitch effect, but a memory loss simulator.</p>
+                    </div>
+
+                    <div class="feature-item">
+                        <h3>Slightly Scrambled</h3>
+                        <p>For subtle degradation. A dedicated buffer engine that introduces minor temporal inconsistencies and jitters, perfect for that "barely holding together" tape feeling.</p>
+                    </div>
+
+                    <div class="feature-item">
+                        <h3>Layer Mixer System</h3>
+                        <p>Combine multiple .taker projects into a massive .tlayer soundscape. Automate fade-ins, fade-outs, and create evolving albums with a single tool.</p>
+                    </div>
+
+                    <div class="feature-item">
+                        <h3>RAM-First Architecture</h3>
+                        <p>Audio is loaded fully into memory allowing for instant Varispeed, Reverse, and Granular Tone shifting with zero disk latency.</p>
+                    </div>
+
+                    <div class="feature-item">
+                        <h3>"The Bounce" Recording</h3>
+                        <p>Capture your performance live. Every knob movement, every scramble, and every imperfection is recorded to WAV or OGG as you hear it.</p>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- FULL EFFECTS LIST -->
+            <section class="glass-panel">
+                <h2 style="margin-bottom: 20px; text-align: center;">FULL EFFECTS RACK</h2>
+                <div class="effects-grid">
+                    <div class="effect-tag">Reverb (FDN)</div>
+                    <div class="effect-tag">Tape Delay</div>
+                    <div class="effect-tag">Parametric EQ</div>
+                    <div class="effect-tag">WaveShaper</div>
+                    <div class="effect-tag">Slightly Scrambled</div>
+                    <div class="effect-tag">PA-Scrambling</div>
+                    <div class="effect-tag">LFO Panning</div>
+                    <div class="effect-tag">Vibrato</div>
+                    <div class="effect-tag">PitchMap</div>
+                    <div class="effect-tag">Drone</div>
+                    <div class="effect-tag">Sample Guiding</div>
+                </div>
+            </section>
 
             <!-- PRICING -->
             <section>
@@ -21,8 +121,8 @@
                             <li class="disabled">Drone</li>
                             <li class="disabled">Layer Mixer</li>
                         </ul>
-                        <!-- CLICK DIRECT TO DRIVE -->
-                        <button class="buy-btn" onclick="openPurchase('FREE', 'https://drive.google.com/file/d/145V3IW2AkO25dQHicwWkh9ffPjomh13E')">DOWNLOAD</button>
+                        <!-- JS Trigger for Free Download -->
+                        <button class="buy-btn" onclick="initiateCheckout('free')">DOWNLOAD</button>
                     </div>
 
                     <!-- PRO -->
@@ -31,16 +131,16 @@
                         <div class="price">$49.99</div>
                         <ul class="features-ul">
                             <li>Everything in Free</li>
-                            <li>Save & Load Projects</li>
-                            <li>All the scrambling effects</li>
-                            <li>Post-Awareness</li>
-                            <li>PitchMap</li>
+                            <li>Save & Load Projects (.taker)</li>
+                            <li>All Scrambling Effects</li>
+                            <li><strong>Post-Awareness Scrambling</strong></li>
+                            <li><strong>PitchMap</strong> (Spectral Quantizer)</li>
                             <li class="disabled">Sample Guide</li>
-                            <li class="disabled">Drone</li>
+                            <li class="disabled">Drone Effect</li>
                             <li class="disabled">Layer Mixer</li>
                         </ul>
-                        <!-- STRIPE PRO LINK -->
-                        <button class="buy-btn" onclick="openPurchase('PRO', 'https://buy.stripe.com/aFadRb83Fgrq16l7t56EU01')">BUY PRO</button>
+                        <!-- JS Trigger for Pro Modal -->
+                        <button class="buy-btn" onclick="initiateCheckout('pro')">BUY PRO</button>
                     </div>
 
                     <!-- STUDIO -->
@@ -49,14 +149,15 @@
                         <div class="price">$69.99</div>
                         <ul class="features-ul">
                             <li>Everything in Pro</li>
-                            <li>Sample Guide</li>
-                            <li>Drone effect</li>
-                            <li>Layer Mixer</li>
-                            <li><strong>Everything Unlocked</strong></li>
+                            <li><strong>Sample Guide</strong> (Real-Time)</li>
+                            <li><strong>Drone Effect</strong></li>
+                            <li><strong>Layer Mixer</strong> (.tlayer)</li>
+                            <li>Everything Unlocked</li>
                         </ul>
-                        <!-- STRIPE STUDIO LINK -->
-                        <button class="buy-btn" onclick="openPurchase('STUDIO', 'https://buy.stripe.com/3cIbJ3cjV5MMdT76p16EU00')">BUY STUDIO</button>
+                        <!-- JS Trigger for Studio Modal -->
+                        <button class="buy-btn" onclick="initiateCheckout('studio')">BUY STUDIO</button>
                     </div>
+
                 </div>
             </section>
 
@@ -67,14 +168,17 @@
         </footer>
     </div>
 
-    <!-- PURCHASE MODAL HTML -->
-    <div id="purchase-modal" class="modal-overlay">
-        <div class="glass-panel modal-content">
-            <div class="modal-close" onclick="closeModal()">X</div>
-            <h3 id="modal-product-title">Purchase</h3>
-            <p>Please enter your email address to register your purchase and proceed to checkout.</p>
-            <input type="email" id="customer-email" class="email-input" placeholder="your@email.com" required>
-            <button id="proceed-btn" class="buy-btn">PROCEED TO CHECKOUT</button>
+    <!-- CHECKOUT MODAL -->
+    <div id="checkout-modal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeCheckout()">&times;</span>
+            <h2 style="margin-bottom: 10px;">Final Step</h2>
+            <p style="opacity: 0.8; margin-bottom: 20px;">Please enter your email address. This is required to send you your License Key immediately after payment.</p>
+            
+            <input type="email" id="user-email" class="email-input" placeholder="your@email.com" required>
+            
+            <button class="modal-btn" onclick="proceedToPayment()">Continue to Payment >></button>
+            <p style="font-size: 0.8rem; margin-top: 15px; opacity: 0.6;">Secure payment via Stripe</p>
         </div>
     </div>
 
