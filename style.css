@@ -1,6 +1,6 @@
 /* 
    OPEN DYNAMICS DESIGN SYSTEM 
-   Updated for Image Support & Marketing Focus
+   Hosting-Ready Version
 */
 
 :root {
@@ -13,7 +13,6 @@
     --accent-color: #3d55ae;
     --button-bg: rgba(255, 255, 255, 0.4);
     --button-hover: rgba(255, 255, 255, 0.6);
-    --warning-red: #b00000;
 }
 
 [data-theme="dark"] {
@@ -26,7 +25,6 @@
     --accent-color: #a1c4fd;
     --button-bg: rgba(255, 255, 255, 0.1);
     --button-hover: rgba(255, 255, 255, 0.2);
-    --warning-red: #ff4d4d;
 }
 
 * {
@@ -78,7 +76,7 @@ header {
 .brand-container {
     display: flex;
     align-items: center;
-    gap: 15px; /* Space between logo and text */
+    gap: 15px; 
 }
 
 .header-logo {
@@ -119,7 +117,7 @@ header {
     width: 180px; 
     height: auto;
     margin-bottom: 25px;
-    border-radius: 35px; /* Squircle effect */
+    border-radius: 35px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
@@ -209,6 +207,23 @@ header {
     border: 1px solid var(--glass-border);
 }
 
+/* --- EFFECTS LIST --- */
+.effects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.effect-tag {
+    background: var(--button-bg);
+    padding: 15px;
+    border-radius: 15px;
+    text-align: center;
+    font-weight: bold;
+    border: 1px solid var(--glass-border);
+}
+
 /* --- PRICING --- */
 .pricing-container {
     display: grid;
@@ -263,9 +278,9 @@ header {
     text-decoration: line-through;
 }
 
-.warning-text {
-    color: var(--warning-red);
-    font-weight: bold;
+.features-ul li.disabled::before {
+    color: inherit;
+    opacity: 0.4;
 }
 
 .buy-btn {
