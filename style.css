@@ -13,6 +13,8 @@
     --accent-color: #3d55ae;
     --button-bg: rgba(255, 255, 255, 0.4);
     --button-hover: rgba(255, 255, 255, 0.6);
+    --gallery-thumbnail-border: rgba(255, 255, 255, 0.1);
+    --gallery-thumbnail-hover-border: var(--accent-color);
 }
 
 [data-theme="dark"] {
@@ -25,6 +27,8 @@
     --accent-color: #a1c4fd;
     --button-bg: rgba(255, 255, 255, 0.1);
     --button-hover: rgba(255, 255, 255, 0.2);
+    --gallery-thumbnail-border: rgba(255, 255, 255, 0.1);
+    --gallery-thumbnail-hover-border: var(--accent-color);
 }
 
 * {
@@ -113,13 +117,99 @@ header {
     align-items: center;
 }
 
-.main-logo-hero {
-    width: 180px; 
-    height: auto;
-    margin-bottom: 25px;
-    border-radius: 35px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+/* MODIFIED FOR GALLERY */
+.hero .main-logo-hero, .hero .product-preview-img {
+    display: none; /* Hide default logos/previews if gallery is present */
 }
+
+.gallery-container {
+    display: flex;
+    flex-direction: column; /* Stack main stage and thumbnails */
+    align-items: center;
+    width: 100%;
+    max-width: 700px; /* Limit width of the gallery */
+    margin: 20px auto; /* Center it */
+}
+
+.main-stage {
+    width: 100%;
+    aspect-ratio: 16 / 9; /* Default for video, will be adjusted by images */
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    margin-bottom: 20px;
+    overflow: hidden; /* Clip content */
+    position: relative; /* For potential overlays */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-stage iframe,
+.main-stage img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Cover the area, may crop */
+    border-radius: 20px;
+}
+
+.main-stage img {
+    object-fit: contain; /* For images, better to see the whole thing */
+}
+
+
+.thumbnail-strip {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto; /* Allow horizontal scrolling if many thumbnails */
+    padding-bottom: 15px; /* Space for scrollbar */
+    width: 100%;
+    max-width: 100%; /* Ensure it doesn't overflow container */
+    justify-content: center; /* Center thumbnails if few */
+}
+
+.thumbnail-strip::-webkit-scrollbar {
+    height: 8px;
+}
+
+.thumbnail-strip::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.1);
+    border-radius: 4px;
+}
+
+.thumbnail-strip::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.2);
+    border-radius: 4px;
+}
+
+.thumbnail {
+    width: 80px;
+    height: 80px;
+    border-radius: 10px;
+    border: 2px solid var(--gallery-thumbnail-border);
+    cursor: pointer;
+    transition: border-color 0.2s ease, transform 0.1s ease;
+    flex-shrink: 0; /* Prevent shrinking */
+    background: var(--glass-bg); /* Fallback */
+    object-fit: cover;
+}
+
+.thumbnail:hover {
+    border-color: var(--gallery-thumbnail-hover-border);
+    transform: translateY(-3px);
+}
+
+.thumbnail.active {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 15px var(--accent-color);
+}
+
+
+/* END MODIFIED FOR GALLERY */
+
 
 .hero h1 {
     font-size: 3.5rem;
@@ -390,4 +480,7 @@ footer {
 
 @media (max-width: 768px) {
     .hero h1 { font-size: 2.2rem; }
+    .hero { padding: 40px 0; }
+    .main-stage { aspect-ratio: 4 / 3; } /* Adjust aspect ratio for smaller screens */
+    .thumbnail { width: 60px; height: 60px; }
 }
