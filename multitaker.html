@@ -4,105 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Multi-Taker™ | Open Dynamics</title>
-    <!-- Vinculamos el estilo general -->
     <link rel="stylesheet" href="style.css">
     
-    <!-- ESTILOS ESPECÍFICOS DEL MODAL -->
     <style>
+        /* ESTILOS DEL MODAL (Mantenidos) */
         .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 99999 !important;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            display: none; justify-content: center; align-items: center; z-index: 99999 !important;
+            opacity: 0; transition: opacity 0.3s ease;
         }
-
-        .modal-overlay.active {
-            display: flex;
-            opacity: 1;
-        }
-
+        .modal-overlay.active { display: flex; opacity: 1; }
         .modal-content {
-            background: rgba(20, 20, 25, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 40px;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
-            position: relative;
-            transform: scale(0.9);
-            transition: transform 0.3s ease;
+            background: rgba(20, 20, 25, 0.95); border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 40px; border-radius: 20px; width: 90%; max-width: 400px;
+            text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            transform: scale(0.9); transition: transform 0.3s ease; position: relative;
         }
-
-        .modal-overlay.active .modal-content {
-            transform: scale(1);
-        }
-
-        .modal-content h2 {
-            color: white;
-            margin-bottom: 10px;
-            font-family: 'Futura', sans-serif;
-        }
-
-        .modal-content p {
-            color: #ccc;
-            margin-bottom: 20px;
-        }
-
+        .modal-overlay.active .modal-content { transform: scale(1); }
+        .modal-content h2 { color: white; margin-bottom: 10px; font-family: 'Futura', sans-serif; }
+        .modal-content p { color: #ccc; margin-bottom: 20px; }
         .modal-input {
-            width: 100%;
-            padding: 15px;
-            margin: 15px 0 25px 0;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            font-size: 1rem;
-            outline: none;
+            width: 100%; padding: 15px; margin: 15px 0 25px 0; border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3); background: rgba(255, 255, 255, 0.1);
+            color: white; font-size: 1rem; outline: none;
         }
-
-        .modal-input:focus {
-            border-color: #a1c4fd;
-            background: rgba(255, 255, 255, 0.15);
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 2rem;
-            cursor: pointer;
-            color: white;
-            opacity: 0.7;
-        }
-
+        .modal-input:focus { border-color: #a1c4fd; background: rgba(255, 255, 255, 0.15); }
+        .modal-close { position: absolute; top: 15px; right: 20px; font-size: 2rem; cursor: pointer; color: white; opacity: 0.7; }
         .modal-close:hover { opacity: 1; }
-
         .modal-btn {
-            background: linear-gradient(135deg, #3d55ae, #75359d);
-            color: white;
-            padding: 15px 30px;
-            border-radius: 30px;
-            font-weight: bold;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-            font-size: 1rem;
-            transition: transform 0.1s;
+            background: linear-gradient(135deg, #3d55ae, #75359d); color: white;
+            padding: 15px 30px; border-radius: 30px; font-weight: bold; border: none;
+            cursor: pointer; width: 100%; font-size: 1rem; transition: transform 0.1s;
         }
-        
         .modal-btn:hover { transform: scale(1.02); }
+
+        /* ESTILOS EXTRA PARA EL BOTÓN DE PLAY FALSO */
+        .play-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            background: rgba(0,0,0,0.3); cursor: pointer; border-radius: 20px;
+            transition: background 0.3s;
+        }
+        .play-overlay:hover { background: rgba(0,0,0,0.1); }
+        .play-icon {
+            width: 80px; height: 80px; background: rgba(255,0,0,0.9);
+            border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+        .play-icon::after {
+            content: ''; display: block; width: 0; height: 0;
+            border-top: 15px solid transparent; border-bottom: 15px solid transparent;
+            border-left: 25px solid white; margin-left: 5px;
+        }
     </style>
 </head>
 <body>
@@ -125,32 +79,29 @@
             <!-- PRODUCT HERO -->
             <section class="glass-panel hero">
                 
-                <!-- GALLERY SYSTEM -->
+                <!-- GALERÍA (SISTEMA NUEVO: FACADE) -->
                 <div class="gallery-container">
-                    <!-- MAIN STAGE (Donde se ve el video o imagen) -->
-                    <div id="mainStage" class="main-stage">
-                        <!-- VIDEO HARDCODED AQUI -->
-                        <iframe 
-                            src="https://www.youtube.com/embed/xa_ZC4h9gyl" 
-                            frameborder="0" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen>
-                        </iframe>
+                    <!-- ESCENARIO PRINCIPAL -->
+                    <div id="mainStage" class="main-stage" style="position: relative;">
+                        <!-- POR DEFECTO: IMAGEN CON BOTÓN PLAY (No carga el iframe aún) -->
+                        <img src="https://img.youtube.com/vi/xa_ZC4h9gyl/hqdefault.jpg" style="width:100%; height:100%; object-fit:cover; border-radius:20px;">
+                        <div class="play-overlay" onclick="activateVideo()">
+                            <div class="play-icon"></div>
+                        </div>
                     </div>
 
-                    <!-- THUMBNAILS (Miniaturas) -->
+                    <!-- TIRA DE MINIATURAS -->
                     <div id="thumbnailStrip" class="thumbnail-strip">
-                        <!-- Boton para volver al VIDEO -->
+                        <!-- Miniatura del Video (Siempre visible) -->
                         <img 
                             src="https://img.youtube.com/vi/xa_ZC4h9gyl/hqdefault.jpg" 
                             class="thumbnail active" 
-                            onclick="setMainContent('video')"
+                            onclick="resetToVideo()"
                             alt="Video Thumbnail"
                         >
-                        <!-- Las imágenes detectadas se agregarán aquí automáticamente -->
+                        <!-- Las imágenes MultiTaker1.png etc se insertarán aquí con JS -->
                     </div>
                 </div>
-                <!-- END GALLERY -->
 
                 <h1 style="margin-top: 20px;">MULTI-TAKER™</h1>
                 <p class="slogan" style="font-size: 1.5rem; font-weight: bold; margin-top: 10px;">
@@ -293,92 +244,125 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT INTEGRADO -->
+    <!-- LOGICA INTEGRADA (NO USA SCRIPT.JS EXTERNO PARA EVITAR CONFLICTOS) -->
     <script>
-        // --- 0. GALLERY LOGIC (SIMPLE & HARDCODED) ---
-        
-        function setMainContent(type, src) {
-            const stage = document.getElementById('mainStage');
-            
-            if (type === 'video') {
-                // Hardcoded iframe string to avoid complications
-                stage.innerHTML = '<iframe src="https://www.youtube.com/embed/xa_ZC4h9gyl" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%; height:100%; border-radius:20px;"></iframe>';
-                stage.style.aspectRatio = '16 / 9';
-            } else if (type === 'image') {
-                stage.innerHTML = '<img src="' + src + '" style="width:100%; height:100%; object-fit:contain; border-radius:20px;">';
-                stage.style.aspectRatio = 'auto'; // Let image decide aspect ratio
-            }
+        // 1. LOGICA DEL MODO OSCURO (SIMPLE Y ROBUSTA)
+        const toggleButton = document.getElementById('theme-toggle');
+        const body = document.body;
 
-            // Update active styling
-            document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
-            // This relies on event.target being the img clicked
-            if (event && event.target) {
-                event.target.classList.add('active');
-            }
+        // Cargar tema guardado
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            body.setAttribute('data-theme', 'dark');
+            toggleButton.textContent = 'Light Mode';
+        } else {
+            // Por defecto Light si no hay nada guardado
+            body.setAttribute('data-theme', 'light');
+            toggleButton.textContent = 'Dark Mode';
         }
 
-        // Auto-detect Images (Simple Loop)
-        document.addEventListener('DOMContentLoaded', () => {
-            const strip = document.getElementById('thumbnailStrip');
-            const max = 10;
-            
-            for (let i = 1; i <= max; i++) {
-                let imgName = `MultiTaker${i}.png`;
-                let img = new Image();
-                img.onload = function() {
-                    // Si la imagen carga, creamos la miniatura
-                    let thumb = document.createElement('img');
-                    thumb.src = imgName;
-                    thumb.classList.add('thumbnail');
-                    thumb.onclick = function(e) { setMainContent('image', imgName); };
-                    strip.appendChild(thumb);
-                };
-                img.onerror = function() {
-                    // Si falla, no hacemos nada (la imagen no existe)
-                };
-                img.src = imgName;
+        // Evento de click
+        toggleButton.addEventListener('click', () => {
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+                toggleButton.textContent = 'Dark Mode';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                toggleButton.textContent = 'Light Mode';
             }
         });
 
+        // 2. LOGICA DE LA GALERIA (FACADE PATTERN)
+        const stage = document.getElementById('mainStage');
+        const videoId = 'xa_ZC4h9gyl';
 
-        // --- 1. GLOBAL VARIABLES & MODAL ---
+        // Función para cambiar el iframe real SOLO cuando el usuario hace click
+        function activateVideo() {
+            stage.innerHTML = `<iframe 
+                src="https://www.youtube.com/embed/${videoId}?autoplay=1&modestbranding=1&rel=0" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen 
+                style="width:100%; height:100%; border-radius:20px;">
+            </iframe>`;
+            stage.style.aspectRatio = '16 / 9';
+        }
+
+        // Función para volver al estado inicial del video (Thumbnail + Boton Play)
+        function resetToVideo() {
+            stage.innerHTML = `
+                <img src="https://img.youtube.com/vi/${videoId}/hqdefault.jpg" style="width:100%; height:100%; object-fit:cover; border-radius:20px;">
+                <div class="play-overlay" onclick="activateVideo()">
+                    <div class="play-icon"></div>
+                </div>
+            `;
+            stage.style.aspectRatio = '16 / 9';
+            updateActiveThumb(0); // 0 siempre es el video
+        }
+
+        // Función para mostrar imagen
+        function showImage(src, index) {
+            stage.innerHTML = `<img src="${src}" style="width:100%; height:100%; object-fit:contain; border-radius:20px;">`;
+            stage.style.aspectRatio = 'auto'; // La imagen define el tamaño
+            updateActiveThumb(index);
+        }
+
+        function updateActiveThumb(index) {
+            document.querySelectorAll('.thumbnail').forEach((t, i) => {
+                // El video es el primero en el DOM del strip, pero las imagenes vienen despues
+                // Ajustamos logica visual
+                if (t.dataset.idx == index) t.classList.add('active');
+                else t.classList.remove('active');
+            });
+        }
+
+        // Auto-detectar Imagenes
+        const strip = document.getElementById('thumbnailStrip');
+        // Asignamos idx 0 al video que ya esta en el HTML
+        strip.firstElementChild.dataset.idx = 0;
+
+        for (let i = 1; i <= 10; i++) {
+            let imgName = `MultiTaker${i}.png`;
+            let img = new Image();
+            img.onload = function() {
+                let thumb = document.createElement('img');
+                thumb.src = imgName;
+                thumb.classList.add('thumbnail');
+                thumb.dataset.idx = i; // Usamos i como indice
+                thumb.onclick = function() { showImage(imgName, i); };
+                strip.appendChild(thumb);
+            };
+            img.src = imgName;
+        }
+
+
+        // 3. LOGICA DEL MODAL Y COMPRA
         let currentStripeLink = "";
         const FORM_ENDPOINT = "https://formsubmit.co/ajax/fa56ded478e0354bed1a4b9bb120b4ae";
 
         function downloadFree() {
             window.open('https://drive.google.com/file/d/1EQbSKNfWSyAp477Vx_lQDeJULZuz3xVO', '_blank');
-
             fetch(FORM_ENDPOINT, {
                 method: "POST",
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({
-                    email: "anonymous@download.com",
-                    _subject: "New Free Download",
-                    message: "A user just downloaded the FREE version."
-                })
-            })
-            .then(response => console.log("Free download logged."))
-            .catch(error => console.error("Log failed."));
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({ email: "anonymous@download.com", _subject: "Free Download", message: "User downloaded FREE version." })
+            }).catch(e => console.error(e));
         }
 
         function openModal(version, stripeLink) {
             currentStripeLink = stripeLink;
             document.getElementById('productVersion').value = version;
-            const modal = document.getElementById('emailModalOverlay');
-            if(modal) modal.classList.add('active');
+            document.getElementById('emailModalOverlay').classList.add('active');
         }
 
         function closeModal() {
-            const modal = document.getElementById('emailModalOverlay');
-            if(modal) modal.classList.remove('active');
+            document.getElementById('emailModalOverlay').classList.remove('active');
         }
 
         window.onclick = function(event) {
-            const modal = document.getElementById('emailModalOverlay');
-            if (event.target == modal) closeModal();
+            if (event.target == document.getElementById('emailModalOverlay')) closeModal();
         }
 
         function handleFormSubmit(e) {
@@ -393,55 +377,12 @@
 
             fetch(FORM_ENDPOINT, {
                 method: "POST",
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({
-                    email: email,
-                    _subject: "New Intent to Buy: " + version,
-                    message: "Customer " + email + " clicked to buy " + version
-                })
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({ email: email, _subject: "Buy Intent: " + version, message: "Customer " + email + " - " + version })
             })
-            .then(response => {
-                window.location.href = currentStripeLink;
-            })
-            .catch(error => {
-                window.location.href = currentStripeLink;
-            });
+            .then(() => { window.location.href = currentStripeLink; })
+            .catch(() => { window.location.href = currentStripeLink; });
         }
-
-        // --- 4. DARK MODE LOGIC (ORIGINAL VERSION RESTORED) ---
-        document.addEventListener('DOMContentLoaded', () => {
-            const toggleButton = document.getElementById('theme-toggle');
-            const body = document.body;
-            
-            const currentTheme = localStorage.getItem('theme');
-            if (currentTheme === 'dark') {
-                body.setAttribute('data-theme', 'dark');
-                toggleButton.textContent = 'Light Mode';
-            } else if (currentTheme === 'light') {
-                body.setAttribute('data-theme', 'light');
-                toggleButton.textContent = 'Dark Mode';
-            } else {
-                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                    body.setAttribute('data-theme', 'dark');
-                    toggleButton.textContent = 'Light Mode';
-                }
-            }
-
-            toggleButton.addEventListener('click', () => {
-                if (body.getAttribute('data-theme') === 'dark') {
-                    body.setAttribute('data-theme', 'light');
-                    toggleButton.textContent = 'Dark Mode';
-                    localStorage.setItem('theme', 'light');
-                } else {
-                    body.setAttribute('data-theme', 'dark');
-                    toggleButton.textContent = 'Light Mode';
-                    localStorage.setItem('theme', 'dark');
-                }
-            });
-        });
     </script>
 </body>
 </html>
