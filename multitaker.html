@@ -7,56 +7,101 @@
     <!-- Vinculamos el estilo general -->
     <link rel="stylesheet" href="style.css">
     
-    <!-- SCRIPT DE TEMA (MODO OSCURO) - Lógica original restaurada -->
-    <script>
-        // Se ejecuta antes de mostrar la página para evitar parpadeos
-        (function() {
-            try {
-                const localTheme = localStorage.getItem('theme');
-                const sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                
-                // Solo activamos Dark si está explícitamente guardado como 'dark'
-                // O si no hay nada guardado Y el sistema es dark.
-                if (localTheme === 'dark' || (!localTheme && sysDark)) {
-                    document.documentElement.setAttribute('data-theme', 'dark');
-                } else {
-                    document.documentElement.setAttribute('data-theme', 'light');
-                }
-            } catch (e) {}
-        })();
-    </script>
-    
     <!-- ESTILOS ESPECÍFICOS DEL MODAL -->
     <style>
         .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            display: none; justify-content: center; align-items: center; z-index: 99999 !important;
-            opacity: 0; transition: opacity 0.3s ease;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999 !important;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
-        .modal-overlay.active { display: flex; opacity: 1; }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
         .modal-content {
-            background: rgba(20, 20, 25, 0.95); border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 40px; border-radius: 20px; width: 90%; max-width: 400px;
-            text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.8);
-            transform: scale(0.9); transition: transform 0.3s ease; position: relative;
+            background: rgba(20, 20, 25, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
         }
-        .modal-overlay.active .modal-content { transform: scale(1); }
-        .modal-content h2 { color: white; margin-bottom: 10px; font-family: 'Futura', sans-serif; }
-        .modal-content p { color: #ccc; margin-bottom: 20px; }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-content h2 {
+            color: white;
+            margin-bottom: 10px;
+            font-family: 'Futura', sans-serif;
+        }
+
+        .modal-content p {
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
         .modal-input {
-            width: 100%; padding: 15px; margin: 15px 0 25px 0; border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.3); background: rgba(255, 255, 255, 0.1);
-            color: white; font-size: 1rem; outline: none;
+            width: 100%;
+            padding: 15px;
+            margin: 15px 0 25px 0;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            outline: none;
         }
-        .modal-input:focus { border-color: #a1c4fd; background: rgba(255, 255, 255, 0.15); }
-        .modal-close { position: absolute; top: 15px; right: 20px; font-size: 2rem; cursor: pointer; color: white; opacity: 0.7; }
+
+        .modal-input:focus {
+            border-color: #a1c4fd;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2rem;
+            cursor: pointer;
+            color: white;
+            opacity: 0.7;
+        }
+
         .modal-close:hover { opacity: 1; }
+
         .modal-btn {
-            background: linear-gradient(135deg, #3d55ae, #75359d); color: white;
-            padding: 15px 30px; border-radius: 30px; font-weight: bold; border: none;
-            cursor: pointer; width: 100%; font-size: 1rem; transition: transform 0.1s;
+            background: linear-gradient(135deg, #3d55ae, #75359d);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1rem;
+            transition: transform 0.1s;
         }
+        
         .modal-btn:hover { transform: scale(1.02); }
     </style>
 </head>
@@ -79,41 +124,8 @@
 
             <!-- PRODUCT HERO -->
             <section class="glass-panel hero">
-                
-                <!-- GALLERY SYSTEM -->
-                <div class="gallery-container">
-                    <!-- MAIN STAGE (Video Hardcoded con youtube-nocookie para evitar bloqueos) -->
-                    <div id="mainStage" class="main-stage">
-                        <iframe 
-                            src="https://www.youtube-nocookie.com/embed/xa_ZC4h9gyl?rel=0&modestbranding=1" 
-                            frameborder="0" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen 
-                            style="width:100%; height:100%; border-radius:20px;">
-                        </iframe>
-                    </div>
-                    <!-- Fallback link si el embed falla -->
-                    <p style="font-size: 0.8rem; opacity: 0.6; margin-top: 5px;">
-                        Video not playing? <a href="https://youtu.be/xa_ZC4h9gyl" target="_blank" style="text-decoration: underline;">Watch on YouTube</a>
-                    </p>
-
-                    <!-- THUMBNAILS -->
-                    <div id="thumbnailStrip" class="thumbnail-strip" style="margin-top: 15px;">
-                        <!-- Boton Miniatura del Video -->
-                        <!-- Usamos 'onerror' para reemplazar la imagen si falla la de YouTube -->
-                        <img 
-                            src="https://i.ytimg.com/vi/xa_ZC4h9gyl/hqdefault.jpg" 
-                            class="thumbnail active" 
-                            onclick="setMainVideo()"
-                            onerror="this.onerror=null; this.src='OD_Logo_Opaque.png';"
-                            alt="Video"
-                        >
-                        <!-- Las imágenes (MultiTaker1.png...) se añaden con JS abajo -->
-                    </div>
-                </div>
-                <!-- END GALLERY -->
-
-                <h1 style="margin-top: 20px;">MULTI-TAKER™</h1>
+                <img src="MultiTaker_Logo_Opaque.png" alt="Multi-Taker Logo" class="main-logo-hero">
+                <h1>MULTI-TAKER™</h1>
                 <p class="slogan" style="font-size: 1.5rem; font-weight: bold; margin-top: 10px;">
                     The number one tool for creating The Caretaker style music.
                 </p>
@@ -192,6 +204,7 @@
                             <li class="disabled">Drone</li>
                             <li class="disabled">Layer Mixer</li>
                         </ul>
+                        <!-- DIRECT DOWNLOAD BUTTON -->
                         <button class="buy-btn" onclick="downloadFree()">DOWNLOAD</button>
                     </div>
 
@@ -209,6 +222,7 @@
                             <li class="disabled">Drone Effect</li>
                             <li class="disabled">Layer Mixer</li>
                         </ul>
+                        <!-- TRIGGER MODAL FOR PRO -->
                         <button class="buy-btn" onclick="openModal('PRO', 'https://buy.stripe.com/aFadRb83Fgrq16l7t56EU01')">BUY PRO</button>
                     </div>
 
@@ -223,6 +237,7 @@
                             <li><strong>Layer Mixer (.tlayer)</strong></li>
                             <li>Everything Unlocked</li>
                         </ul>
+                        <!-- TRIGGER MODAL FOR STUDIO -->
                         <button class="buy-btn" onclick="openModal('STUDIO', 'https://buy.stripe.com/3cIbJ3cjV5MMdT76p16EU00')">BUY STUDIO</button>
                     </div>
 
@@ -251,119 +266,120 @@
         </div>
     </div>
 
-    <!-- SCRIPTS -->
+    <!-- JAVASCRIPT INTEGRADO -->
     <script>
-        // --- LOGICA DE LA GALERIA ---
-        const stage = document.getElementById('mainStage');
-        
-        // Volver a poner el video en el escenario
-        function setMainVideo() {
-            stage.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/xa_ZC4h9gyl?rel=0&modestbranding=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%; height:100%; border-radius:20px;"></iframe>';
-            stage.style.aspectRatio = '16 / 9';
-            
-            // Actualizar miniatura activa
-            updateActiveThumb(null); // null indica video
-        }
-
-        // Poner imagen en el escenario
-        function setMainImage(src, element) {
-            stage.innerHTML = '<img src="' + src + '" style="width:100%; height:100%; object-fit:contain; border-radius:20px;">';
-            stage.style.aspectRatio = 'auto';
-            updateActiveThumb(element);
-        }
-
-        function updateActiveThumb(activeEl) {
-            // Quitar active a todos
-            document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
-            
-            if (activeEl) {
-                activeEl.classList.add('active');
-            } else {
-                // Si es null, asumimos que es el video (primer elemento)
-                const first = document.querySelector('.thumbnail');
-                if (first) first.classList.add('active');
-            }
-        }
-
-        // Detectar imágenes automáticamente
-        document.addEventListener('DOMContentLoaded', () => {
-            const strip = document.getElementById('thumbnailStrip');
-            const max = 10;
-            
-            for (let i = 1; i <= max; i++) {
-                let imgName = `MultiTaker${i}.png`;
-                let img = new Image();
-                img.onload = function() {
-                    let thumb = document.createElement('img');
-                    thumb.src = imgName;
-                    thumb.classList.add('thumbnail');
-                    thumb.onclick = function() { setMainImage(imgName, thumb); };
-                    strip.appendChild(thumb);
-                };
-                img.src = imgName;
-            }
-        });
-
-
-        // --- LOGICA DEL TEMA (BOTON) ---
-        const toggleButton = document.getElementById('theme-toggle');
-        
-        // Sincronizar texto del botón al cargar
-        if (document.documentElement.getAttribute('data-theme') === 'dark') {
-            toggleButton.textContent = 'Light Mode';
-        } else {
-            toggleButton.textContent = 'Dark Mode';
-        }
-
-        toggleButton.addEventListener('click', () => {
-            let current = document.documentElement.getAttribute('data-theme');
-            if (current === 'dark') {
-                document.documentElement.setAttribute('data-theme', 'light');
-                localStorage.setItem('theme', 'light');
-                toggleButton.textContent = 'Dark Mode';
-            } else {
-                document.documentElement.setAttribute('data-theme', 'dark');
-                localStorage.setItem('theme', 'dark');
-                toggleButton.textContent = 'Light Mode';
-            }
-        });
-
-
-        // --- LOGICA DE COMPRA Y MODAL ---
+        // GLOBAL VARIABLES
         let currentStripeLink = "";
+        
+        // --- !!! TOKEN DE FORMSUBMIT (REEMPLAZA EL CORREO DIRECTO) !!! ---
         const FORM_ENDPOINT = "https://formsubmit.co/ajax/fa56ded478e0354bed1a4b9bb120b4ae";
 
+        // --- 1. FREE DOWNLOAD LOGIC ---
         function downloadFree() {
+            // 1. Abrir la descarga inmediatamente
             window.open('https://drive.google.com/file/d/1EQbSKNfWSyAp477Vx_lQDeJULZuz3xVO', '_blank');
-            // Log silencioso
+
+            // 2. Mandar notificación silenciosa usando el TOKEN
             fetch(FORM_ENDPOINT, {
-                method: "POST", headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
-                body: JSON.stringify({ email: "anonymous@download.com", _subject: "Free DL", message: "User DL Free ver" })
-            }).catch(e=>{});
+                method: "POST",
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: "anonymous@download.com", // Dummy mail to satisfy FormSubmit
+                    _subject: "New Free Download",
+                    message: "A user just downloaded the FREE version."
+                })
+            })
+            .then(response => console.log("Free download logged."))
+            .catch(error => console.error("Log failed, but download should work."));
         }
 
+        // --- 2. MODAL FUNCTIONS (PAID) ---
         function openModal(version, stripeLink) {
+            console.log("Opening modal for: " + version);
             currentStripeLink = stripeLink;
             document.getElementById('productVersion').value = version;
-            document.getElementById('emailModalOverlay').classList.add('active');
+            
+            const modal = document.getElementById('emailModalOverlay');
+            if(modal) modal.classList.add('active');
         }
-        function closeModal() { document.getElementById('emailModalOverlay').classList.remove('active'); }
-        window.onclick = function(e) { if(e.target == document.getElementById('emailModalOverlay')) closeModal(); }
 
+        function closeModal() {
+            const modal = document.getElementById('emailModalOverlay');
+            if(modal) modal.classList.remove('active');
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('emailModalOverlay');
+            if (event.target == modal) closeModal();
+        }
+
+        // --- 3. FORM HANDLING (THE EMAIL BOT) ---
         function handleFormSubmit(e) {
             e.preventDefault(); 
             const btn = e.target.querySelector('button');
             const email = document.getElementById('customerEmail').value;
             const version = document.getElementById('productVersion').value;
-            btn.innerText = "Processing..."; btn.style.opacity = "0.7"; btn.disabled = true;
 
+            btn.innerText = "Processing...";
+            btn.style.opacity = "0.7";
+            btn.disabled = true;
+
+            // Enviar usando el TOKEN
             fetch(FORM_ENDPOINT, {
-                method: "POST", headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
-                body: JSON.stringify({ email: email, _subject: "Buy: " + version, message: email + " -> " + version })
+                method: "POST",
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: email,
+                    _subject: "New Intent to Buy: " + version,
+                    message: "Customer " + email + " clicked to buy " + version
+                })
             })
-            .then(() => { window.location.href = currentStripeLink; })
-            .catch(() => { window.location.href = currentStripeLink; });
+            .then(response => {
+                window.location.href = currentStripeLink; // Redirect to Stripe
+            })
+            .catch(error => {
+                console.error("Email API failed, redirecting anyway.");
+                window.location.href = currentStripeLink; // Fallback redirect
+            });
         }
+
+        // --- 4. DARK MODE LOGIC ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggleButton = document.getElementById('theme-toggle');
+            const body = document.body;
+            
+            const currentTheme = localStorage.getItem('theme');
+            if (currentTheme === 'dark') {
+                body.setAttribute('data-theme', 'dark');
+                toggleButton.textContent = 'Light Mode';
+            } else if (currentTheme === 'light') {
+                body.setAttribute('data-theme', 'light');
+                toggleButton.textContent = 'Dark Mode';
+            } else {
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    body.setAttribute('data-theme', 'dark');
+                    toggleButton.textContent = 'Light Mode';
+                }
+            }
+
+            toggleButton.addEventListener('click', () => {
+                if (body.getAttribute('data-theme') === 'dark') {
+                    body.setAttribute('data-theme', 'light');
+                    toggleButton.textContent = 'Dark Mode';
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    body.setAttribute('data-theme', 'dark');
+                    toggleButton.textContent = 'Light Mode';
+                    localStorage.setItem('theme', 'dark');
+                }
+            });
+        });
     </script>
 </body>
 </html>
