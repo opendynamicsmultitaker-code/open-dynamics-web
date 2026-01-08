@@ -7,6 +7,18 @@
     <!-- Vinculamos el estilo general -->
     <link rel="stylesheet" href="style.css">
     
+    <!-- PRE-LOAD THEME: Evita el parpadeo blanco si el usuario está en modo oscuro -->
+    <script>
+        (function() {
+            const currentTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (currentTheme === 'dark' || (!currentTheme && systemPrefersDark)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.body?.setAttribute('data-theme', 'dark'); // Fallback por si body ya existe
+            }
+        })();
+    </script>
+    
     <!-- ESTILOS ESPECÍFICOS DEL MODAL -->
     <style>
         .modal-overlay {
@@ -276,115 +288,107 @@
         </div>
     </div>
 
+    <!-- GLOBAL SCRIPT (Dark Mode, etc) -->
+    <script src="script.js"></script>
+
     <!-- GALLERY JAVASCRIPT -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const videoId = 'xa_ZC4h9gyl'; // YouTube Video ID
-            const maxImages = 10; // Maximum number of images to check for (e.g., MultiTaker1.png to MultiTaker10.png)
+            const maxImages = 10; // Maximum number of images to check for
 
             const mainStage = document.getElementById('mainStage');
             const thumbnailStrip = document.getElementById('thumbnailStrip');
 
-            let mediaItems = []; // Stores { type: 'video'|'image', src: 'url', thumbnail: 'url' }
+            let mediaItems = []; 
 
-            // 1. Add the YouTube Video
+            // 1. Add the YouTube Video (SIMPLIFIED URL)
             mediaItems.push({
                 type: 'video',
-                src: `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}`, // Added loop and playlist for better experience
-                thumbnail: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` // Default YouTube thumbnail
+                // Eliminados loop y playlist para evitar el error "Video no disponible" en unlisted
+                src: `https://www.youtube.com/embed/${videoId}?rel=0`, 
+                thumbnail: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
             });
 
             // 2. Dynamically check for images
             for (let i = 1; i <= maxImages; i++) {
                 const imgName = `MultiTaker${i}.png`;
-                const imageUrl = imgName; // Assumes images are in the same directory
+                const imageUrl = imgName;
 
-                // Use fetch to check if the image exists without causing errors
                 fetch(imageUrl)
                     .then(response => {
                         if (response.ok) {
                             mediaItems.push({
                                 type: 'image',
                                 src: imageUrl,
-                                thumbnail: imageUrl // Use the same URL for thumbnail
+                                thumbnail: imageUrl
                             });
-                            createThumbnail(imageUrl, imageUrl, mediaItems.length - 1); // Pass index
+                            createThumbnail(imageUrl, imageUrl, mediaItems.length - 1);
                         }
                     })
                     .catch(error => {
-                        // If an image doesn't exist, we just stop checking further
-                        // console.warn(`Image ${imgName} not found.`); // Optional: for debugging
+                        // Image not found, silent fail
                     });
             }
 
-            // Function to create and append thumbnails
             function createThumbnail(src, thumbSrc, index) {
                 const thumb = document.createElement('img');
                 thumb.src = thumbSrc;
                 thumb.classList.add('thumbnail');
                 thumb.alt = `Thumbnail ${index + 1}`;
-                thumb.dataset.index = index; // Store index for easy reference
+                thumb.dataset.index = index;
 
-                thumb.onerror = () => {
-                    // If thumbnail itself fails to load, hide it
-                    thumb.style.display = 'none';
-                };
+                thumb.onerror = () => { thumb.style.display = 'none'; };
 
                 thumb.onclick = () => {
                     showMedia(index);
-                    // Update active class on thumbnails
                     document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
                     thumb.classList.add('active');
                 };
 
-                // Append only if it's not the video placeholder or if it's the first image after the video
                 if (index > 0 || mediaItems.some(item => item.type === 'image')) {
                      thumbnailStrip.appendChild(thumb);
                 }
             }
 
-            // Function to display the media in the main stage
             function showMedia(index) {
                 if (index < 0 || index >= mediaItems.length) return;
 
                 const item = mediaItems[index];
-                mainStage.innerHTML = ''; // Clear previous media
+                mainStage.innerHTML = ''; 
 
                 if (item.type === 'video') {
                     const iframe = document.createElement('iframe');
                     iframe.src = item.src;
                     iframe.frameborder = '0';
-                    iframe.allow = 'autoplay; encrypted-media';
+                    iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
                     iframe.allowFullscreen = true;
                     iframe.title = 'YouTube video player';
                     mainStage.appendChild(iframe);
-                    mainStage.style.aspectRatio = '16 / 9'; // Ensure video aspect ratio
+                    mainStage.style.aspectRatio = '16 / 9';
                 } else if (item.type === 'image') {
                     const img = document.createElement('img');
                     img.src = item.src;
                     img.alt = `Gallery Image ${index + 1}`;
                     mainStage.appendChild(img);
-                    mainStage.style.aspectRatio = 'auto'; // Let image define its aspect ratio
+                    mainStage.style.aspectRatio = 'auto';
                 }
 
-                // Update active thumbnail class
                 document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
                 const activeThumb = document.querySelector(`.thumbnail[data-index="${index}"]`);
                 if (activeThumb) activeThumb.classList.add('active');
             }
 
-            // Initial setup: Display the first item (video) and add its thumbnail
-            mediaItems.sort((a, b) => { // Ensure video is first
+            // Orden inicial y renderizado
+            mediaItems.sort((a, b) => {
                 if (a.type === 'video') return -1;
                 if (b.type === 'video') return 1;
                 return 0;
             });
 
-            // Re-create thumbnails based on sorted order
-            thumbnailStrip.innerHTML = ''; // Clear any initially appended thumbnails
+            thumbnailStrip.innerHTML = '';
             mediaItems.forEach((item, index) => {
                 if (item.type === 'video') {
-                    // Add placeholder for video thumbnail or generate one
                     const thumb = document.createElement('img');
                     thumb.src = item.thumbnail;
                     thumb.classList.add('thumbnail');
@@ -393,51 +397,29 @@
                     thumb.onclick = () => showMedia(index);
                     thumb.onerror = () => thumb.style.display = 'none';
                     thumbnailStrip.appendChild(thumb);
-                    thumb.classList.add('active'); // Mark video as active initially
-                } else {
-                     // Image thumbnails will be added by the fetch loop
+                    thumb.classList.add('active');
                 }
             });
             
-            // Show the first media item (video)
             showMedia(0);
         });
 
-        // --- GLOBAL JAVASCRIPT (KEEP AS IS FOR NOW) ---
-        // GLOBAL VARIABLES
+        // --- GLOBAL VARIABLES FOR MODAL ---
         let currentStripeLink = "";
-        
-        // --- !!! TOKEN DE FORMSUBMIT (REEMPLAZA EL CORREO DIRECTO) !!! ---
         const FORM_ENDPOINT = "https://formsubmit.co/ajax/fa56ded478e0354bed1a4b9bb120b4ae";
 
-        // --- 1. FREE DOWNLOAD LOGIC ---
         function downloadFree() {
-            // 1. Abrir la descarga inmediatamente
             window.open('https://drive.google.com/file/d/1EQbSKNfWSyAp477Vx_lQDeJULZuz3xVO', '_blank');
-
-            // 2. Mandar notificación silenciosa usando el TOKEN
             fetch(FORM_ENDPOINT, {
                 method: "POST",
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({
-                    email: "anonymous@download.com", // Dummy mail to satisfy FormSubmit
-                    _subject: "New Free Download",
-                    message: "A user just downloaded the FREE version."
-                })
-            })
-            .then(response => console.log("Free download logged."))
-            .catch(error => console.error("Log failed, but download should work."));
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({ email: "anonymous@download.com", _subject: "New Free Download", message: "User downloaded FREE version." })
+            }).catch(e => console.error(e));
         }
 
-        // --- 2. MODAL FUNCTIONS (PAID) ---
         function openModal(version, stripeLink) {
-            console.log("Opening modal for: " + version);
             currentStripeLink = stripeLink;
             document.getElementById('productVersion').value = version;
-            
             const modal = document.getElementById('emailModalOverlay');
             if(modal) modal.classList.add('active');
         }
@@ -452,7 +434,6 @@
             if (event.target == modal) closeModal();
         }
 
-        // --- 3. FORM HANDLING (THE EMAIL BOT) ---
         function handleFormSubmit(e) {
             e.preventDefault(); 
             const btn = e.target.querySelector('button');
@@ -463,31 +444,14 @@
             btn.style.opacity = "0.7";
             btn.disabled = true;
 
-            // Enviar usando el TOKEN
             fetch(FORM_ENDPOINT, {
                 method: "POST",
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({
-                    email: email,
-                    _subject: "New Intent to Buy: " + version,
-                    message: "Customer " + email + " clicked to buy " + version
-                })
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({ email: email, _subject: "Intent to Buy: " + version, message: "Customer " + email + " - " + version })
             })
-            .then(response => {
-                window.location.href = currentStripeLink; // Redirect to Stripe
-            })
-            .catch(error => {
-                console.error("Email API failed, redirecting anyway.");
-                window.location.href = currentStripeLink; // Fallback redirect
-            });
+            .then(() => { window.location.href = currentStripeLink; })
+            .catch(() => { window.location.href = currentStripeLink; });
         }
-
-        // --- 4. DARK MODE LOGIC (MOVED TO STYLE.CSS FOR SIMPLICITY) ---
-        // This is now handled by the global script.js or integrated into index.html if needed.
-        // For now, assume theme toggle on index.html affects this page too if style.css is linked.
     </script>
 </body>
 </html>
