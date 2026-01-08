@@ -7,18 +7,6 @@
     <!-- Vinculamos el estilo general -->
     <link rel="stylesheet" href="style.css">
     
-    <!-- PRE-LOAD THEME: Evita el parpadeo blanco si el usuario está en modo oscuro -->
-    <script>
-        (function() {
-            const currentTheme = localStorage.getItem('theme');
-            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            if (currentTheme === 'dark' || (!currentTheme && systemPrefersDark)) {
-                document.documentElement.setAttribute('data-theme', 'dark');
-                document.body?.setAttribute('data-theme', 'dark'); // Fallback por si body ya existe
-            }
-        })();
-    </script>
-    
     <!-- ESTILOS ESPECÍFICOS DEL MODAL -->
     <style>
         .modal-overlay {
@@ -134,20 +122,37 @@
         <main>
             <a href="index.html" class="back-link">< Back to Main</a>
 
-            <!-- PRODUCT HERO WITH GALLERY -->
+            <!-- PRODUCT HERO -->
             <section class="glass-panel hero">
                 
-                <!-- Gallery Container -->
-                <div id="galleryContainer" class="gallery-container">
+                <!-- GALLERY SYSTEM -->
+                <div class="gallery-container">
+                    <!-- MAIN STAGE (Donde se ve el video o imagen) -->
                     <div id="mainStage" class="main-stage">
-                        <!-- Video or Image will be loaded here by JS -->
+                        <!-- VIDEO HARDCODED AQUI -->
+                        <iframe 
+                            src="https://www.youtube.com/embed/xa_ZC4h9gyl" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
                     </div>
+
+                    <!-- THUMBNAILS (Miniaturas) -->
                     <div id="thumbnailStrip" class="thumbnail-strip">
-                        <!-- Thumbnails will be generated here by JS -->
+                        <!-- Boton para volver al VIDEO -->
+                        <img 
+                            src="https://img.youtube.com/vi/xa_ZC4h9gyl/hqdefault.jpg" 
+                            class="thumbnail active" 
+                            onclick="setMainContent('video')"
+                            alt="Video Thumbnail"
+                        >
+                        <!-- Las imágenes detectadas se agregarán aquí automáticamente -->
                     </div>
                 </div>
+                <!-- END GALLERY -->
 
-                <h1 style="margin-top: 30px;">MULTI-TAKER™</h1>
+                <h1 style="margin-top: 20px;">MULTI-TAKER™</h1>
                 <p class="slogan" style="font-size: 1.5rem; font-weight: bold; margin-top: 10px;">
                     The number one tool for creating The Caretaker style music.
                 </p>
@@ -182,7 +187,7 @@
                     </div>
                     <div class="feature-item">
                         <h3>"The Bounce" Recording</h3>
-                        <p>Capture your performance live. Every knob movement, every scramble, and every imperfection is recorded to WAV ogg as you hear it.</p>
+                        <p>Capture your performance live. Every knob movement, every scramble, and every imperfection is recorded to WAV or OGG as you hear it.</p>
                     </div>
                 </div>
             </section>
@@ -288,133 +293,75 @@
         </div>
     </div>
 
-    <!-- GLOBAL SCRIPT (Dark Mode, etc) -->
-    <script src="script.js"></script>
-
-    <!-- GALLERY JAVASCRIPT -->
+    <!-- JAVASCRIPT INTEGRADO -->
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const videoId = 'xa_ZC4h9gyl'; // YouTube Video ID
-            const maxImages = 10; // Maximum number of images to check for
-
-            const mainStage = document.getElementById('mainStage');
-            const thumbnailStrip = document.getElementById('thumbnailStrip');
-
-            let mediaItems = []; 
-
-            // 1. Add the YouTube Video (SIMPLIFIED URL)
-            mediaItems.push({
-                type: 'video',
-                // Eliminados loop y playlist para evitar el error "Video no disponible" en unlisted
-                src: `https://www.youtube.com/embed/${videoId}?rel=0`, 
-                thumbnail: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
-            });
-
-            // 2. Dynamically check for images
-            for (let i = 1; i <= maxImages; i++) {
-                const imgName = `MultiTaker${i}.png`;
-                const imageUrl = imgName;
-
-                fetch(imageUrl)
-                    .then(response => {
-                        if (response.ok) {
-                            mediaItems.push({
-                                type: 'image',
-                                src: imageUrl,
-                                thumbnail: imageUrl
-                            });
-                            createThumbnail(imageUrl, imageUrl, mediaItems.length - 1);
-                        }
-                    })
-                    .catch(error => {
-                        // Image not found, silent fail
-                    });
-            }
-
-            function createThumbnail(src, thumbSrc, index) {
-                const thumb = document.createElement('img');
-                thumb.src = thumbSrc;
-                thumb.classList.add('thumbnail');
-                thumb.alt = `Thumbnail ${index + 1}`;
-                thumb.dataset.index = index;
-
-                thumb.onerror = () => { thumb.style.display = 'none'; };
-
-                thumb.onclick = () => {
-                    showMedia(index);
-                    document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
-                    thumb.classList.add('active');
-                };
-
-                if (index > 0 || mediaItems.some(item => item.type === 'image')) {
-                     thumbnailStrip.appendChild(thumb);
-                }
-            }
-
-            function showMedia(index) {
-                if (index < 0 || index >= mediaItems.length) return;
-
-                const item = mediaItems[index];
-                mainStage.innerHTML = ''; 
-
-                if (item.type === 'video') {
-                    const iframe = document.createElement('iframe');
-                    iframe.src = item.src;
-                    iframe.frameborder = '0';
-                    iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-                    iframe.allowFullscreen = true;
-                    iframe.title = 'YouTube video player';
-                    mainStage.appendChild(iframe);
-                    mainStage.style.aspectRatio = '16 / 9';
-                } else if (item.type === 'image') {
-                    const img = document.createElement('img');
-                    img.src = item.src;
-                    img.alt = `Gallery Image ${index + 1}`;
-                    mainStage.appendChild(img);
-                    mainStage.style.aspectRatio = 'auto';
-                }
-
-                document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
-                const activeThumb = document.querySelector(`.thumbnail[data-index="${index}"]`);
-                if (activeThumb) activeThumb.classList.add('active');
-            }
-
-            // Orden inicial y renderizado
-            mediaItems.sort((a, b) => {
-                if (a.type === 'video') return -1;
-                if (b.type === 'video') return 1;
-                return 0;
-            });
-
-            thumbnailStrip.innerHTML = '';
-            mediaItems.forEach((item, index) => {
-                if (item.type === 'video') {
-                    const thumb = document.createElement('img');
-                    thumb.src = item.thumbnail;
-                    thumb.classList.add('thumbnail');
-                    thumb.alt = 'Video Thumbnail';
-                    thumb.dataset.index = index;
-                    thumb.onclick = () => showMedia(index);
-                    thumb.onerror = () => thumb.style.display = 'none';
-                    thumbnailStrip.appendChild(thumb);
-                    thumb.classList.add('active');
-                }
-            });
+        // --- 0. GALLERY LOGIC (SIMPLE & HARDCODED) ---
+        
+        function setMainContent(type, src) {
+            const stage = document.getElementById('mainStage');
             
-            showMedia(0);
+            if (type === 'video') {
+                // Hardcoded iframe string to avoid complications
+                stage.innerHTML = '<iframe src="https://www.youtube.com/embed/xa_ZC4h9gyl" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%; height:100%; border-radius:20px;"></iframe>';
+                stage.style.aspectRatio = '16 / 9';
+            } else if (type === 'image') {
+                stage.innerHTML = '<img src="' + src + '" style="width:100%; height:100%; object-fit:contain; border-radius:20px;">';
+                stage.style.aspectRatio = 'auto'; // Let image decide aspect ratio
+            }
+
+            // Update active styling
+            document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+            // This relies on event.target being the img clicked
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
+        }
+
+        // Auto-detect Images (Simple Loop)
+        document.addEventListener('DOMContentLoaded', () => {
+            const strip = document.getElementById('thumbnailStrip');
+            const max = 10;
+            
+            for (let i = 1; i <= max; i++) {
+                let imgName = `MultiTaker${i}.png`;
+                let img = new Image();
+                img.onload = function() {
+                    // Si la imagen carga, creamos la miniatura
+                    let thumb = document.createElement('img');
+                    thumb.src = imgName;
+                    thumb.classList.add('thumbnail');
+                    thumb.onclick = function(e) { setMainContent('image', imgName); };
+                    strip.appendChild(thumb);
+                };
+                img.onerror = function() {
+                    // Si falla, no hacemos nada (la imagen no existe)
+                };
+                img.src = imgName;
+            }
         });
 
-        // --- GLOBAL VARIABLES FOR MODAL ---
+
+        // --- 1. GLOBAL VARIABLES & MODAL ---
         let currentStripeLink = "";
         const FORM_ENDPOINT = "https://formsubmit.co/ajax/fa56ded478e0354bed1a4b9bb120b4ae";
 
         function downloadFree() {
             window.open('https://drive.google.com/file/d/1EQbSKNfWSyAp477Vx_lQDeJULZuz3xVO', '_blank');
+
             fetch(FORM_ENDPOINT, {
                 method: "POST",
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                body: JSON.stringify({ email: "anonymous@download.com", _subject: "New Free Download", message: "User downloaded FREE version." })
-            }).catch(e => console.error(e));
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: "anonymous@download.com",
+                    _subject: "New Free Download",
+                    message: "A user just downloaded the FREE version."
+                })
+            })
+            .then(response => console.log("Free download logged."))
+            .catch(error => console.error("Log failed."));
         }
 
         function openModal(version, stripeLink) {
@@ -446,12 +393,55 @@
 
             fetch(FORM_ENDPOINT, {
                 method: "POST",
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                body: JSON.stringify({ email: email, _subject: "Intent to Buy: " + version, message: "Customer " + email + " - " + version })
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: email,
+                    _subject: "New Intent to Buy: " + version,
+                    message: "Customer " + email + " clicked to buy " + version
+                })
             })
-            .then(() => { window.location.href = currentStripeLink; })
-            .catch(() => { window.location.href = currentStripeLink; });
+            .then(response => {
+                window.location.href = currentStripeLink;
+            })
+            .catch(error => {
+                window.location.href = currentStripeLink;
+            });
         }
+
+        // --- 4. DARK MODE LOGIC (ORIGINAL VERSION RESTORED) ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggleButton = document.getElementById('theme-toggle');
+            const body = document.body;
+            
+            const currentTheme = localStorage.getItem('theme');
+            if (currentTheme === 'dark') {
+                body.setAttribute('data-theme', 'dark');
+                toggleButton.textContent = 'Light Mode';
+            } else if (currentTheme === 'light') {
+                body.setAttribute('data-theme', 'light');
+                toggleButton.textContent = 'Dark Mode';
+            } else {
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    body.setAttribute('data-theme', 'dark');
+                    toggleButton.textContent = 'Light Mode';
+                }
+            }
+
+            toggleButton.addEventListener('click', () => {
+                if (body.getAttribute('data-theme') === 'dark') {
+                    body.setAttribute('data-theme', 'light');
+                    toggleButton.textContent = 'Dark Mode';
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    body.setAttribute('data-theme', 'dark');
+                    toggleButton.textContent = 'Light Mode';
+                    localStorage.setItem('theme', 'dark');
+                }
+            });
+        });
     </script>
 </body>
 </html>
