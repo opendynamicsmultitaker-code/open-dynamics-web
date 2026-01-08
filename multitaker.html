@@ -122,10 +122,20 @@
         <main>
             <a href="index.html" class="back-link">< Back to Main</a>
 
-            <!-- PRODUCT HERO -->
+            <!-- PRODUCT HERO WITH GALLERY -->
             <section class="glass-panel hero">
-                <img src="MultiTaker_Logo_Opaque.png" alt="Multi-Taker Logo" class="main-logo-hero">
-                <h1>MULTI-TAKER™</h1>
+                
+                <!-- Gallery Container -->
+                <div id="galleryContainer" class="gallery-container">
+                    <div id="mainStage" class="main-stage">
+                        <!-- Video or Image will be loaded here by JS -->
+                    </div>
+                    <div id="thumbnailStrip" class="thumbnail-strip">
+                        <!-- Thumbnails will be generated here by JS -->
+                    </div>
+                </div>
+
+                <h1 style="margin-top: 30px;">MULTI-TAKER™</h1>
                 <p class="slogan" style="font-size: 1.5rem; font-weight: bold; margin-top: 10px;">
                     The number one tool for creating The Caretaker style music.
                 </p>
@@ -160,7 +170,7 @@
                     </div>
                     <div class="feature-item">
                         <h3>"The Bounce" Recording</h3>
-                        <p>Capture your performance live. Every knob movement, every scramble, and every imperfection is recorded to WAV or OGG as you hear it.</p>
+                        <p>Capture your performance live. Every knob movement, every scramble, and every imperfection is recorded to WAV ogg as you hear it.</p>
                     </div>
                 </div>
             </section>
@@ -266,8 +276,134 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT INTEGRADO -->
+    <!-- GALLERY JAVASCRIPT -->
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const videoId = 'xa_ZC4h9gyl'; // YouTube Video ID
+            const maxImages = 10; // Maximum number of images to check for (e.g., MultiTaker1.png to MultiTaker10.png)
+
+            const mainStage = document.getElementById('mainStage');
+            const thumbnailStrip = document.getElementById('thumbnailStrip');
+
+            let mediaItems = []; // Stores { type: 'video'|'image', src: 'url', thumbnail: 'url' }
+
+            // 1. Add the YouTube Video
+            mediaItems.push({
+                type: 'video',
+                src: `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}`, // Added loop and playlist for better experience
+                thumbnail: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` // Default YouTube thumbnail
+            });
+
+            // 2. Dynamically check for images
+            for (let i = 1; i <= maxImages; i++) {
+                const imgName = `MultiTaker${i}.png`;
+                const imageUrl = imgName; // Assumes images are in the same directory
+
+                // Use fetch to check if the image exists without causing errors
+                fetch(imageUrl)
+                    .then(response => {
+                        if (response.ok) {
+                            mediaItems.push({
+                                type: 'image',
+                                src: imageUrl,
+                                thumbnail: imageUrl // Use the same URL for thumbnail
+                            });
+                            createThumbnail(imageUrl, imageUrl, mediaItems.length - 1); // Pass index
+                        }
+                    })
+                    .catch(error => {
+                        // If an image doesn't exist, we just stop checking further
+                        // console.warn(`Image ${imgName} not found.`); // Optional: for debugging
+                    });
+            }
+
+            // Function to create and append thumbnails
+            function createThumbnail(src, thumbSrc, index) {
+                const thumb = document.createElement('img');
+                thumb.src = thumbSrc;
+                thumb.classList.add('thumbnail');
+                thumb.alt = `Thumbnail ${index + 1}`;
+                thumb.dataset.index = index; // Store index for easy reference
+
+                thumb.onerror = () => {
+                    // If thumbnail itself fails to load, hide it
+                    thumb.style.display = 'none';
+                };
+
+                thumb.onclick = () => {
+                    showMedia(index);
+                    // Update active class on thumbnails
+                    document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+                    thumb.classList.add('active');
+                };
+
+                // Append only if it's not the video placeholder or if it's the first image after the video
+                if (index > 0 || mediaItems.some(item => item.type === 'image')) {
+                     thumbnailStrip.appendChild(thumb);
+                }
+            }
+
+            // Function to display the media in the main stage
+            function showMedia(index) {
+                if (index < 0 || index >= mediaItems.length) return;
+
+                const item = mediaItems[index];
+                mainStage.innerHTML = ''; // Clear previous media
+
+                if (item.type === 'video') {
+                    const iframe = document.createElement('iframe');
+                    iframe.src = item.src;
+                    iframe.frameborder = '0';
+                    iframe.allow = 'autoplay; encrypted-media';
+                    iframe.allowFullscreen = true;
+                    iframe.title = 'YouTube video player';
+                    mainStage.appendChild(iframe);
+                    mainStage.style.aspectRatio = '16 / 9'; // Ensure video aspect ratio
+                } else if (item.type === 'image') {
+                    const img = document.createElement('img');
+                    img.src = item.src;
+                    img.alt = `Gallery Image ${index + 1}`;
+                    mainStage.appendChild(img);
+                    mainStage.style.aspectRatio = 'auto'; // Let image define its aspect ratio
+                }
+
+                // Update active thumbnail class
+                document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+                const activeThumb = document.querySelector(`.thumbnail[data-index="${index}"]`);
+                if (activeThumb) activeThumb.classList.add('active');
+            }
+
+            // Initial setup: Display the first item (video) and add its thumbnail
+            mediaItems.sort((a, b) => { // Ensure video is first
+                if (a.type === 'video') return -1;
+                if (b.type === 'video') return 1;
+                return 0;
+            });
+
+            // Re-create thumbnails based on sorted order
+            thumbnailStrip.innerHTML = ''; // Clear any initially appended thumbnails
+            mediaItems.forEach((item, index) => {
+                if (item.type === 'video') {
+                    // Add placeholder for video thumbnail or generate one
+                    const thumb = document.createElement('img');
+                    thumb.src = item.thumbnail;
+                    thumb.classList.add('thumbnail');
+                    thumb.alt = 'Video Thumbnail';
+                    thumb.dataset.index = index;
+                    thumb.onclick = () => showMedia(index);
+                    thumb.onerror = () => thumb.style.display = 'none';
+                    thumbnailStrip.appendChild(thumb);
+                    thumb.classList.add('active'); // Mark video as active initially
+                } else {
+                     // Image thumbnails will be added by the fetch loop
+                }
+            });
+            
+            // Show the first media item (video)
+            showMedia(0);
+        });
+
+        // --- GLOBAL JAVASCRIPT (KEEP AS IS FOR NOW) ---
         // GLOBAL VARIABLES
         let currentStripeLink = "";
         
@@ -349,37 +485,9 @@
             });
         }
 
-        // --- 4. DARK MODE LOGIC ---
-        document.addEventListener('DOMContentLoaded', () => {
-            const toggleButton = document.getElementById('theme-toggle');
-            const body = document.body;
-            
-            const currentTheme = localStorage.getItem('theme');
-            if (currentTheme === 'dark') {
-                body.setAttribute('data-theme', 'dark');
-                toggleButton.textContent = 'Light Mode';
-            } else if (currentTheme === 'light') {
-                body.setAttribute('data-theme', 'light');
-                toggleButton.textContent = 'Dark Mode';
-            } else {
-                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                    body.setAttribute('data-theme', 'dark');
-                    toggleButton.textContent = 'Light Mode';
-                }
-            }
-
-            toggleButton.addEventListener('click', () => {
-                if (body.getAttribute('data-theme') === 'dark') {
-                    body.setAttribute('data-theme', 'light');
-                    toggleButton.textContent = 'Dark Mode';
-                    localStorage.setItem('theme', 'light');
-                } else {
-                    body.setAttribute('data-theme', 'dark');
-                    toggleButton.textContent = 'Light Mode';
-                    localStorage.setItem('theme', 'dark');
-                }
-            });
-        });
+        // --- 4. DARK MODE LOGIC (MOVED TO STYLE.CSS FOR SIMPLICITY) ---
+        // This is now handled by the global script.js or integrated into index.html if needed.
+        // For now, assume theme toggle on index.html affects this page too if style.css is linked.
     </script>
 </body>
 </html>
